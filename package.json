@@ -10,11 +10,14 @@
     "validate": "turbo lint type-check test",
     "test": "turbo test",
     "migrate:create": "pnpm --filter=@morpheus/api mikro-orm migration:create",
-    "migrate:up": "pnpm --filter=@morpheus/api mikro-orm migration:up"
+    "migrate:up": "pnpm --filter=@morpheus/api mikro-orm migration:up",
+    "validate:local": "node harness/validate-local.mjs",
+    "validate:deploy": "node harness/validate-deployment.mjs"
   },
   "devDependencies": {
     "turbo": "^2.0.0",
-    "prettier": "^3.0.0"
+    "prettier": "^3.0.0",
+    "playwright": "^1.45.0"
   },
   "packageManager": "pnpm@9.0.0",
   "engines": {

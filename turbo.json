@@ -4,19 +4,23 @@
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**"],
-      "cache": true
+      "cache": true,
+      "env": ["VITE_*", "NODE_ENV"]
     },
     "dev": {
       "persistent": true,
       "cache": false
     },
     "lint": {
+      "dependsOn": ["^build"],
       "cache": true
     },
     "type-check": {
+      "dependsOn": ["^build"],
       "cache": true
     },
     "test": {
+      "dependsOn": ["^build"],
       "cache": true,
       "outputs": ["coverage/**"]
     }

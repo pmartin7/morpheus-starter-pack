@@ -37,6 +37,8 @@ pnpm build
 pnpm check        # lint + type-check
 pnpm validate     # check + tests
 pnpm test
+pnpm validate:local   # browser harness: routes render, no console errors
+pnpm validate:deploy  # Vercel harness: latest deployments healthy
 ```
 
 ## 4) Stack
@@ -106,6 +108,7 @@ pnpm test
 | create-pr-description | /create-pr | PR description from git diff |
 | add-vector-store | /add-vector-store | Wire Turbopuffer vector search |
 | add-blob-storage | /add-blob-storage | Wire Vercel Blob file storage |
+| validate-app | /validate-app | Run local/deployment validation harnesses |
 
 ## 10) Anti-Patterns
 

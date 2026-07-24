@@ -3,16 +3,16 @@ import {
   signInWithEmailAndPassword,
   signOut as firebaseSignOut,
 } from 'firebase/auth';
-import { auth } from '../../lib/firebase.js';
+import { requireFirebaseAuth } from '../../lib/firebase.js';
 import { AuthContext } from './auth-provider.js';
 
 export function useAuth() {
   const { user, loading } = useContext(AuthContext);
 
   const signIn = (email: string, password: string) =>
-    signInWithEmailAndPassword(auth, email, password);
+    signInWithEmailAndPassword(requireFirebaseAuth(), email, password);
 
-  const signOut = () => firebaseSignOut(auth);
+  const signOut = () => firebaseSignOut(requireFirebaseAuth());
 
   const getToken = async (): Promise<string | null> => {
     if (!user) return null;

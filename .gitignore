@@ -19,6 +19,9 @@ coverage/
 .mikro-orm/
 migrations/*.js
 
+# harness
+harness/artifacts/
+
 # editor
 .DS_Store
 *.log

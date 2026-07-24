@@ -4,6 +4,8 @@ import tailwindcss from '@tailwindcss/vite';
 import { resolve } from 'path';
 
 export default defineConfig({
+  // One .env at the repo root serves web and api alike.
+  envDir: '../../',
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
