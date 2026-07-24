@@ -12,6 +12,9 @@ build/
 .env.local
 .env.*.local
 
+# vercel (created by `vercel link`; contains project/org IDs)
+.vercel/
+
 # coverage
 coverage/
 

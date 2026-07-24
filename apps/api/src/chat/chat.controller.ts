@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Param, Post, Res, UseGuards } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import type { Response } from 'express';
 import { SendMessageSchema } from '@morpheus/shared';
 import type { SendMessage } from '@morpheus/shared';
@@ -14,6 +15,8 @@ import type { Conversation } from './entities/conversation.entity.js';
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
+  // Stricter than the global limit: each send triggers a paid AI completion.
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
   @Post('send')
   async send(
     @CurrentUser() user: User,

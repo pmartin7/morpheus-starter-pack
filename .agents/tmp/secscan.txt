@@ -1,0 +1,38 @@
+### commit 561b1086b46564f954157b72fd4852ddf7085c5e
+-- key patterns:
+none
+-- real private key material:
+none
+-- conn strings with creds:
+none
+-- env files in tree:
+.env.example
+### commit 9c73f6861ef2280712ca44a5d4dbcde3cf34e74b
+-- key patterns:
+none
+-- real private key material:
+none
+-- conn strings with creds:
+none
+-- env files in tree:
+.env.example
+### commit 9ec22981731ba784ec949e893bf6973ba7655f48
+-- key patterns:
+none
+-- real private key material:
+none
+-- conn strings with creds:
+none
+-- env files in tree:
+.env.example
+### commit c5706cfb67b1134b9cbc8ecd00b492551d8c0dd7
+-- key patterns:
+none
+-- real private key material:
+none
+-- conn strings with creds:
+none
+-- env files in tree:
+.env.example
+=== tracked sensitive-name files (HEAD) ===
+.env.example

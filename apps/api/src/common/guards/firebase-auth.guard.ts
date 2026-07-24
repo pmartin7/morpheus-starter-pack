@@ -37,10 +37,14 @@ export class FirebaseAuthGuard implements CanActivate, OnModuleInit {
       throw new UnauthorizedException('Invalid or expired Firebase token');
     }
 
-    // Deliberate: `decoded.email_verified` is NOT enforced here. Fine while no
-    // real authenticated API surface exists, but enforce it for password-provider
-    // tokens (decoded.firebase.sign_in_provider === 'password') when the first
-    // real authenticated endpoint ships. Google tokens always arrive verified.
+    // Password-provider accounts must verify their email before touching the
+    // API: getOrCreate below claims the email column (unique), so an unverified
+    // signup could squat another person's address. Google tokens always arrive
+    // verified.
+    if (decoded.firebase.sign_in_provider === 'password' && !decoded.email_verified) {
+      throw new UnauthorizedException('Email not verified');
+    }
+
     const user = await this.usersService.getOrCreate(
       decoded.uid,
       decoded['email'] ?? '',

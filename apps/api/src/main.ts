@@ -21,6 +21,10 @@ async function bootstrap(): Promise<void> {
 
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
 
+  // Behind Vercel's proxy, req.ip must come from x-forwarded-for or the
+  // IP-based throttle would lump all anonymous traffic under the proxy IP.
+  app.getHttpAdapter().getInstance().set('trust proxy', 1);
+
   app.useLogger(app.get(Logger));
   app.setGlobalPrefix('api');
   app.enableCors({ origin: process.env['CORS_ORIGIN'] ?? 'http://localhost:5173' });

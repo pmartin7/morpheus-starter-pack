@@ -47,3 +47,5 @@ API: NestJS single serverless function
 - Named exports only
 - MikroORM RequestContext per request (forMiddleware)
 - Pino structured logging (nestjs-pino)
+- Rate limiting on every endpoint (60 req/min global, 10 req/min on chat send;
+  tracked per bearer token, falling back to client IP)

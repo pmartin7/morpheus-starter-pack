@@ -1,0 +1,12 @@
+=== emails ===
+firebase-adminsdk-xxxxx@your-project-id.iam.gserviceaccount.com
+firebase-adminsdk-xxxxx@your-project.iam.gserviceaccount.com
+i@izs.me
+pass@ep-xyz.us-east-2.aws.neon.tech
+=== git authors ===
+DocuPierre <pierre@gavel.io>
+Pierre Martin <pierre@gavel.io>
+=== project ids / hosts ===
+your-project-id.appspot.com
+your-project-id.firebaseapp.com
+your-project.firebaseapp.com
