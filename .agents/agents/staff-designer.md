@@ -20,6 +20,11 @@ You are given browser screenshots of a newly implemented feature. Compare agains
 - Flag any second component library introduction immediately
 - Every piece of feedback must have a concrete suggested fix
 - Prioritize: broken > inaccessible > inconsistent > aesthetic
+- Weigh distinctiveness (criterion 10): correctness issues still rank first,
+  but a design that scores < 4 on Distinctiveness & Brand Expression cannot
+  receive a plain "approve" — at best "approve with minor changes", and the
+  review must include concrete suggestions for making it brand-specific
+  (mark, type voice, color story, or layout attitude)
 
 ## Output Format
 

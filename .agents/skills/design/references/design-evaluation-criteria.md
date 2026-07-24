@@ -28,3 +28,9 @@ Are shadcn-style primitives used? No new component library introduced.
 
 ## 9) Performance Perception
 Does the design account for loading states? No layout shift on data load.
+
+## 10) Distinctiveness & Brand Expression
+Does the design express this product's brand, or could any product ship it?
+Stock template palette/type/layout unmodified scores 1. At least one
+memorable, brand-specific element (mark, type voice, color story, layout
+attitude) is required for ≥4.

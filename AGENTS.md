@@ -39,6 +39,7 @@ pnpm validate     # check + tests
 pnpm test
 pnpm validate:local   # browser harness: routes render, no console errors
 pnpm validate:deploy  # Vercel harness: latest deployments healthy
+pnpm design:shots -- --label <label>  # screenshots of every route at 1280px + 375px
 ```
 
 ## 4) Stack
@@ -114,6 +115,10 @@ pnpm validate:deploy  # Vercel harness: latest deployments healthy
 
 Do not:
 - introduce a second UI system or component library
+- change design tokens in `apps/web/src/styles/globals.css` without updating
+  the token table in `docs/UI_DESIGN.md`, or vice versa — they are one system
+- use raw palette utilities (`text-gray-*`, `bg-white`, `text-red-*`, …) in
+  `apps/web` — use theme tokens (`text-ink`, `bg-card`, `text-destructive`)
 - mix validation systems (Zod only)
 - add default exports
 - log secrets or full payloads

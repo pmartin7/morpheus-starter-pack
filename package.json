@@ -12,7 +12,8 @@
     "migrate:create": "pnpm --filter=@morpheus/api mikro-orm migration:create",
     "migrate:up": "pnpm --filter=@morpheus/api mikro-orm migration:up",
     "validate:local": "node harness/validate-local.mjs",
-    "validate:deploy": "node harness/validate-deployment.mjs"
+    "validate:deploy": "node harness/validate-deployment.mjs",
+    "design:shots": "node harness/design-shots.mjs"
   },
   "devDependencies": {
     "turbo": "^2.0.0",

@@ -19,7 +19,17 @@ Read:
 - Existing component files in `apps/web/src/components/ui/`
 - The relevant page/feature files
 
-Use browser tools to take screenshots at desktop (1280px) and mobile (375px).
+Capture screenshots with the design harness (do not write a throwaway script):
+
+```bash
+pnpm design:shots -- --label before   # full-page shots of every route at 1280px + 375px
+```
+
+Screenshots land in `harness/artifacts/design-<label>-<route>-<viewport>.png`.
+Pass `--fresh` if a dev server was already running before your edits — a stale
+module graph serves stale code and produces misleading screenshots. Use a
+different `--label` (e.g. `after`) when re-shooting for comparison. Open and
+visually inspect the screenshots.
 
 ## Phase 3 — Propose or Audit
 

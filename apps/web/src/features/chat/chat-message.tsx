@@ -14,8 +14,8 @@ export function ChatMessage({ role, content }: ChatMessageProps): JSX.Element {
         className={cn(
           'max-w-[80%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed',
           isUser
-            ? 'bg-primary text-white'
-            : 'bg-surface-alt text-gray-800',
+            ? 'bg-primary text-primary-foreground'
+            : 'bg-surface-alt text-ink',
         )}
       >
         {content}

@@ -94,7 +94,9 @@ async function launchBrowser() {
     return await chromium.launch();
   } catch (err) {
     console.error(`FAIL: could not launch chromium: ${err.message}`);
-    console.error('hint: run pnpm exec playwright install chromium');
+    console.error(
+      'hint: run pnpm exec playwright install chromium — in the SAME permission context as this harness (sandboxed runners use per-profile browser caches)',
+    );
     process.exit(2);
   }
 }

@@ -16,6 +16,12 @@ Use the AskQuestion tool to collect:
 6. File upload needed? (yes/no — determines whether to run add-blob-storage)
 7. Vector search needed? (yes/no — determines whether to run add-vector-store)
 8. GitHub account confirmed + Vercel account confirmed? (prerequisite check)
+9. Brand adjectives — ask for 3–5 (feeds Phase 4 Visual Identity)
+10. Color or font preferences, if any (hex values welcome but not required)
+11. One reference product or aesthetic the founder likes (e.g. "Linear",
+    "Japanese stationery", "70s NASA")
+12. Anything to explicitly avoid visually (e.g. "no dark mode", "nothing
+    corporate")
 
 ## Phase 2 — Generate AGENTS.md
 
@@ -35,14 +41,49 @@ If chat is being removed (Phase 5), drop the `/chat` route from the route map,
 the `Conversation` and `Message` entities from the entity model, and the Chat
 line from the data flow section.
 
-## Phase 4 — Customize UI_DESIGN.md (optional)
+## Phase 4 — Visual Identity (required)
 
-If the founder wants brand customization, ask for:
-- Primary brand color (hex)
-- Two brand adjectives (e.g. "precise, minimal")
-- Any font preferences
+This phase is **not optional** and it changes **code**, not just docs.
 
-Update `docs/UI_DESIGN.md` with the provided values, replacing {PLACEHOLDER} tokens.
+**Anti-default rule:** shipping the template's stock palette, fonts, and
+centered-hero layout unmodified is a **failed init**, regardless of how little
+brand context was given. Derive something specific from the adjectives and
+reference aesthetic, or ask. When no step forces a decision, defaults ship —
+this phase is that step.
+
+Run it as a condensed `/design` pass, reusing that skill's machinery rather
+than duplicating it:
+
+1. **Gather** — already collected in Phase 1 (questions 9–12): brand
+   adjectives, color/font preferences, reference aesthetic, and what to avoid.
+2. **Research** — one or two web searches: current design trends for this
+   product's category, plus the visual vocabulary the adjectives imply (e.g.
+   "samurai/zen" → traditional Japanese palette and *ma*, not cherry-blossom
+   kitsch). Note both what to adopt and which trend-traps to avoid (generic
+   dark-mode+neon, glassmorphism, etc.).
+3. **Propose** — 2–3 named design directions, each with palette + type pairing
+   + layout attitude and a one-paragraph rationale. Recommend one. If the user
+   pre-answered the init questions, apply the recommendation without blocking.
+4. **Apply in code** — the design system is fully tokenized, so this is small:
+   - `apps/web/src/styles/globals.css` — update the `@theme` token values
+     (colors and `--font-sans` / `--font-display` / `--font-mono`)
+   - `docs/UI_DESIGN.md` — update the token table **in the same pass**
+     (lockstep rule: the two files always describe the same values)
+   - `apps/web/index.html` — font `<link>` loading for the chosen fonts
+   - `apps/web/src/components/brand-mark.tsx` — replace the placeholder SVG
+     with the product's mark (path outlines only, no `<text>` elements)
+   - Landing (`home.tsx`) and login pages — express the identity in layout
+     and copy, not just token values
+5. **Verify** — screenshot, review, fix:
+
+   ```bash
+   pnpm design:shots -- --label init --fresh
+   ```
+
+   Open and view the desktop (1280px) and mobile (375px) screenshots. Run the
+   staff-designer agent in Mode C with them (criteria include
+   Distinctiveness & Brand Expression — a generic result cannot be approved).
+   Fix must-fix issues, then re-screenshot with `--label init-2` and confirm.
 
 ## Phase 5 — Remove the Chat Feature (only if Phase 1 answered "no")
 
@@ -131,6 +172,13 @@ gh repo create {PROJECT_NAME} --public --source=. --remote=origin --push
 # Install dependencies
 pnpm install
 
+# Install the Playwright browser used by the validation harnesses — without
+# this, validate:local fails with exit code 2 on first run. On sandboxed agent
+# runners the browser cache path can differ per sandbox profile: install and
+# run the harness in the SAME permission context, or the harness won't find
+# the executable even right after a successful install.
+pnpm exec playwright install chromium
+
 # Link to Vercel
 vercel link
 
@@ -193,5 +241,23 @@ Only after `pnpm validate:deploy` passes, print:
 
 1. Live URL from Vercel
 2. GitHub repo URL
-3. List of available skills with triggers (from AGENTS.md section 9)
-4. Next suggested action: "Run /research-feature to plan your first feature"
+3. The **Firebase Console checklist** below — these are manual steps code
+   cannot do, and auth is broken until the founder completes them
+4. List of available skills with triggers (from AGENTS.md section 9)
+5. Next suggested action: "Run /research-feature to plan your first feature"
+
+### Firebase Console checklist (print verbatim in handoff)
+
+> Before auth works, complete these one-time steps in the
+> [Firebase Console](https://console.firebase.google.com):
+>
+> 1. **Authentication → Sign-in method**: enable **Email/Password** and
+>    **Google** (Google requires picking a support email).
+> 2. **Authentication → Settings → Authorized domains**: add `localhost` and
+>    your production domain — required for Google's `signInWithPopup` and for
+>    the email-verification `continueUrl`.
+> 3. No email-template changes needed — Firebase's hosted verification page
+>    works out of the box.
+>
+> If sign-in fails with `auth/operation-not-allowed` or popup errors, one of
+> the steps above is missing.
