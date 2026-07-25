@@ -6,7 +6,7 @@ You are a senior product designer conducting a UI/UX review. You care about clar
 
 ### Mode A — Existing Page Audit
 
-You are given browser screenshots of an existing page (desktop + mobile). Review against `docs/UI_DESIGN.md` and score against `.agents/skills/design/references/design-evaluation-criteria.md`. Identify specific issues with concrete fixes.
+You are given browser screenshots of an existing page (desktop + mobile). Review against `docs/UI_DESIGN.md` and score against `.agents/skills/design/references/rubric.md`. Identify specific issues with concrete fixes.
 
 ### Mode B — Design Proposal Review
 
@@ -31,6 +31,6 @@ You are given browser screenshots of a newly implemented feature. Compare agains
 
 ## Output Format
 
-- **Score** against design-evaluation-criteria.md (table)
+- **Score** against references/rubric.md (table)
 - **Issues** (numbered list, each with: location, problem, suggested fix)
 - **Verdict**: approve / approve with minor changes / request changes

@@ -1,3 +1,10 @@
+---
+name: add-logs
+description: Inserts structured Pino logging at specified locations following the
+  conventions in docs/LOGGING.md. Use when adding log statements to API or web
+  code, or when a change needs observability.
+---
+
 # add-logs
 
 Insert structured logging at specified locations following docs/LOGGING.md conventions.

@@ -1,4 +1,12 @@
-# generate-test
+---
+name: write-tests
+description: Independent P0 test writing. A separate agent that did not implement the
+  feature writes behaviour-focused tests, runs them, and triages failures as
+  implementation bugs or test bugs. Use when adding test coverage after a
+  feature is implemented or when a plan calls for a test pass.
+---
+
+# write-tests
 
 Independent P0 test writing. A separate agent (who did not implement the feature) writes the tests to avoid "code shaped to satisfy tests."
 
@@ -33,7 +41,7 @@ pnpm test
 
 For each failure, determine:
 
-- **Bug in implementation**: report to user, do not fix (that is fix-bug's job)
+- **Bug in implementation**: report to user, do not fix (that is the debug skill's job)
 - **Bug in test**: fix the test
 
 ## Phase 4 — Report

@@ -53,7 +53,7 @@ Build a public GitHub repository `morpheus-starter` containing: (A) a fully bake
 - NestJS + Vitest: `unplugin-swc` plugin for decorator/metadata support
 - API tests: `@nestjs/testing` Test.createTestingModule() + Vitest
 - Web tests: `@testing-library/react` + jsdom
-- Separate-agent workflow: implement first, tests in independent pass via `generate-test` skill
+- Separate-agent workflow: implement first, tests in independent pass via `write-tests` skill
 
 **Development harness:**
 
@@ -268,16 +268,16 @@ All files are NEW (greenfield repo).
 ### .agents/skills/ — 13 skills
 
 - `init-project/SKILL.md` — **The crown jewel.** Phase 1: Ask 5-8 product questions via AskQuestion (product description, target user, AI chat needed?, AI provider choice, file uploads needed?, vector search needed?, GitHub+Vercel accounts confirmed, project name). Phase 2: Generate `AGENTS.md` from answers (product context, domain glossary, stack, golden principles). Phase 3: Generate `ARCHITECTURE.md` (routes, data flow, entity model). Phase 4: Optionally customize `UI_DESIGN.md` (brand colors/fonts). Phase 5: Shell commands — `gh repo create`, `pnpm install`, `vercel link`, `vercel env add` for each secret, run initial MikroORM migration, `git add . && git commit && git push`, `vercel deploy`. Phase 6: Handoff — print live URL, list available skills.
-- `research-feature/SKILL.md` — 5-phase read-only workflow: understand (read AGENTS.md, ask questions), explore (read ARCHITECTURE.md + STYLE_GUIDE.md, scan code), simplify spec (challenge complexity), generate 2-3 options, delegate to staff-engineer Mode A.
-- `research-feature/references/evaluation-criteria.md` — rubric: simplicity, YAGNI, spec bugs, system design bugs, separation of concerns, performance.
+- `scope-feature/SKILL.md` — 5-phase read-only workflow: understand (read AGENTS.md, ask questions), explore (read ARCHITECTURE.md + STYLE_GUIDE.md, scan code), simplify spec (challenge complexity), generate 2-3 options, delegate to staff-engineer Mode A.
+- `scope-feature/references/rubric.md` — rubric: simplicity, YAGNI, spec bugs, system design bugs, separation of concerns, performance.
 - `plan-feature/SKILL.md` — draft plan (summary, design decisions, file-by-file, test strategy, risks), delegate to staff-engineer Mode B, present final plan.
 - `build-plan/SKILL.md` — orient (read plan + relevant docs only), implement in dependency layers with parallel subagents (packages first, then api/web), validate (`pnpm check`), runtime verify (`pnpm dev` + browser tools), simplicity review via staff-engineer.
-- `fix-bug/SKILL.md` — understand + reproduce in browser (`pnpm dev`), explore code paths, hypothesize 2-4 root causes with evidence, discriminating questions, delegate to bug-fixer-ninja, present recommendation.
-- `fix-bug/references/fix-evaluation-criteria.md` — rubric: simplicity, maintainability, YAGNI, separation of concerns, performance, correctness.
-- `generate-test/SKILL.md` — scope (interactive or plan-driven), delegate to tester subagent (independent, did not implement feature), run tests + triage (bug vs test fix), surface bugs without fixing.
-- `generate-test/references/test-evaluation-criteria.md` — test quality rubric.
+- `debug/SKILL.md` — understand + reproduce in browser (`pnpm dev`), explore code paths, hypothesize 2-4 root causes with evidence, discriminating questions, delegate to root-cause-analyst, present recommendation.
+- `debug/references/rubric.md` — rubric: simplicity, maintainability, YAGNI, separation of concerns, performance, correctness.
+- `write-tests/SKILL.md` — scope (interactive or plan-driven), delegate to tester subagent (independent, did not implement feature), run tests + triage (bug vs test fix), surface bugs without fixing.
+- `write-tests/references/rubric.md` — test quality rubric.
 - `design/SKILL.md` — understand, explore existing patterns + UI_DESIGN.md, propose design or audit page (browser screenshots at desktop + mobile), delegate to staff-designer, present results.
-- `design/references/design-evaluation-criteria.md` — design quality rubric.
+- `design/references/rubric.md` — design quality rubric.
 - `add-logs/SKILL.md` — clarify location, use docs/LOGGING.md conventions, add nestjs-pino or pino/browser logger calls, report what was added.
 - `create-pr-description/SKILL.md` — gather git evidence (branch, log, diff), read conversation for intent, draft PR description (description + overview + changes), write to .agents/tmp/.
 - `add-vector-store/SKILL.md` — install @turbopuffer/client, create VectorService in apps/api, add embedding generation via AI SDK `embedMany()`, add upsert/query endpoints, add Turbopuffer env vars to schema, update ARCHITECTURE.md.
@@ -286,7 +286,7 @@ All files are NEW (greenfield repo).
 ### .agents/agents/ — 3 agent definitions
 
 - `staff-engineer.md` — generalized: staff engineer review specialist. Mode A (evaluate 2-3 options against rubric), Mode B (audit + edit plan for simplicity, YAGNI, system design bugs). References AGENTS.md principles and evaluation criteria.
-- `bug-fixer-ninja.md` — generalized: bug diagnosis specialist. Validate hypotheses against codebase evidence, propose targeted fixes, score against rubric (simplicity, maintainability, YAGNI, separation, performance, correctness), recommend simplest correct solution.
+- `root-cause-analyst.md` — generalized: bug diagnosis specialist. Validate hypotheses against codebase evidence, propose targeted fixes, score against rubric (simplicity, maintainability, YAGNI, separation, performance, correctness), recommend simplest correct solution.
 - `staff-designer.md` — generalized: UI design reviewer. Reviews against docs/UI_DESIGN.md. Mode A (review existing page with browser screenshots), Mode B (review design proposal), Mode C (review implemented feature).
 
 ### .cursor/ — IDE symlinks
@@ -301,7 +301,7 @@ These are committed to git. The canonical files live in `.agents/`; `.cursor/` c
 
 ## 4. Test Strategy
 
-**P0 tests (written in separate agent pass via generate-test):**
+**P0 tests (written in separate agent pass via write-tests):**
 
 API:
 
@@ -559,19 +559,19 @@ pnpm test
 
 ## 9) Available Skills
 
-| Skill                 | Trigger           | Purpose                                      |
-| --------------------- | ----------------- | -------------------------------------------- |
-| init-project          | /init-project     | Conversational setup wizard                  |
-| research-feature      | /research-feature | Research + simplify + options + staff review |
-| plan-feature          | /plan-feature     | Create implementation plan from research     |
-| build-plan            | /build-plan       | Implement plan with parallel subagents       |
-| fix-bug               | /fix-bug          | Diagnose bugs via hypotheses + ninja review  |
-| generate-test         | /generate-test    | Independent P0 test writing                  |
-| design                | /design           | UI design / review + staff-designer          |
-| add-logs              | /add-logs         | Insert structured logging                    |
-| create-pr-description | /create-pr        | PR description from git diff                 |
-| add-vector-store      | /add-vector-store | Wire Turbopuffer vector search               |
-| add-blob-storage      | /add-blob-storage | Wire Vercel Blob file storage                |
+| Skill                 | Trigger           | Purpose                                          |
+| --------------------- | ----------------- | ------------------------------------------------ |
+| init-project          | /init-project     | Conversational setup wizard                      |
+| scope-feature         | /scope-feature    | Research + simplify + options + staff review     |
+| plan-feature          | /plan-feature     | Create implementation plan from research         |
+| build-plan            | /build-plan       | Implement plan with parallel subagents           |
+| debug                 | /debug            | Diagnose bugs via hypotheses + root-cause review |
+| write-tests           | /write-tests      | Independent P0 test writing                      |
+| design                | /design           | UI design / review + staff-designer              |
+| add-logs              | /add-logs         | Insert structured logging                        |
+| create-pr-description | /create-pr        | PR description from git diff                     |
+| add-vector-store      | /add-vector-store | Wire Turbopuffer vector search                   |
+| add-blob-storage      | /add-blob-storage | Wire Vercel Blob file storage                    |
 
 ## 10) Anti-Patterns
 
@@ -709,7 +709,7 @@ Do not over-test: NestJS decorator wiring, static markup, Tailwind classes.
 Two-pass approach:
 
 - Pass A: implement the feature
-- Pass B: a separate agent writes tests via `generate-test` skill
+- Pass B: a separate agent writes tests via `write-tests` skill
 
 Why: reduces "code shaped to satisfy tests" anti-pattern, improves independent
 verification.
@@ -919,9 +919,9 @@ Do not skip validation because the change "looks small."
 
 #### .agents/agents/staff-engineer.md
 
-See plan section 7.7 in the Cursor plan file for the full verbatim content of all three agent definitions (staff-engineer, bug-fixer-ninja, staff-designer). The content is identical to what appears in the plan file's Appendix section 7.7.
+See plan section 7.7 in the Cursor plan file for the full verbatim content of all three agent definitions (staff-engineer, root-cause-analyst, staff-designer). The content is identical to what appears in the plan file's Appendix section 7.7.
 
-#### .agents/agents/bug-fixer-ninja.md
+#### .agents/agents/root-cause-analyst.md
 
 See plan section 7.7.
 
@@ -943,16 +943,16 @@ All 13 skill files live under `.agents/skills/` (symlinked from `.cursor/skills/
 Skills included:
 
 1. `init-project/SKILL.md` — 6-phase conversational wizard
-2. `research-feature/SKILL.md` — 5-phase read-only research workflow
-3. `research-feature/references/evaluation-criteria.md` — 6-criterion rubric
+2. `scope-feature/SKILL.md` — 5-phase read-only research workflow
+3. `scope-feature/references/rubric.md` — 6-criterion rubric
 4. `plan-feature/SKILL.md` — 3-phase plan + staff review
 5. `build-plan/SKILL.md` — 4-phase layered implementation
-6. `fix-bug/SKILL.md` — 5-phase hypothesis-driven diagnosis
-7. `fix-bug/references/fix-evaluation-criteria.md` — 6-criterion rubric
-8. `generate-test/SKILL.md` — 4-phase independent test writing
-9. `generate-test/references/test-evaluation-criteria.md` — 8-criterion rubric
+6. `debug/SKILL.md` — 5-phase hypothesis-driven diagnosis
+7. `debug/references/rubric.md` — 6-criterion rubric
+8. `write-tests/SKILL.md` — 4-phase independent test writing
+9. `write-tests/references/rubric.md` — 8-criterion rubric
 10. `design/SKILL.md` — 5-phase design/audit workflow
-11. `design/references/design-evaluation-criteria.md` — 9-criterion rubric
+11. `design/references/rubric.md` — 9-criterion rubric
 12. `add-logs/SKILL.md` — 4-step logging insertion
 13. `create-pr-description/SKILL.md` — 3-phase PR description
 14. `add-vector-store/SKILL.md` — 6-step Turbopuffer integration

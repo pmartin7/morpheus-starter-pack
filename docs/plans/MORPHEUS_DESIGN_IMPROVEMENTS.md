@@ -36,7 +36,7 @@ Each cause below maps to a numbered fix in the next section.
    exactly the machinery that later produced the good outcome — but
    `init-project` neither calls it nor borrows its structure. → Fix 2
 5. **The evaluation criteria cannot fail a generic design.** All nine
-   criteria in `design-evaluation-criteria.md` measure correctness
+   criteria in `rubric.md` measure correctness
    (hierarchy, contrast, states, consistency). A stock-template page scores
    4–5 across the board. There is no axis for distinctiveness or brand
    expression, so "lame but correct" passes review. → Fix 4
@@ -117,7 +117,7 @@ restyles nav, pages, buttons, inputs, and cards with no other edits.
 ### Fix 4 — Add a distinctiveness criterion to the design review
 
 **Change:** add a tenth criterion to
-`.agents/skills/design/references/design-evaluation-criteria.md`:
+`.agents/skills/design/references/rubric.md`:
 
 ```markdown
 ## 10) Distinctiveness & Brand Expression

@@ -1,3 +1,10 @@
+---
+name: build-plan
+description: Implements a completed feature plan in dependency order using parallel
+  subagents, validates with pnpm check, and runtime-verifies in the browser.
+  Use when a plan from plan-feature is approved and ready to build.
+---
+
 # build-plan
 
 Implements a feature plan using parallel subagents, validates, and runtime-verifies.

@@ -1,8 +1,16 @@
+---
+name: plan-feature
+description: Drafts a file-by-file implementation plan from scoping output, then delegates
+  to the staff-engineer agent for audit (plus ai-engineer when the plan touches
+  the AI stack). Use when turning a scoped feature into a concrete plan ready
+  for build-plan.
+---
+
 # plan-feature
 
 Drafts a file-by-file implementation plan for a feature, then delegates to staff-engineer for audit (plus ai-engineer when the plan touches the AI stack).
 
-Requires research output (options + recommendation) from research-feature. Read AGENTS.md before starting.
+Requires scoping output (options + recommendation) from scope-feature. Read AGENTS.md before starting.
 
 ## Phase 1 — Draft Plan
 
@@ -24,7 +32,7 @@ Group by layer: packages first, then api, then web.
 ### Test Strategy
 
 List P0 test cases (auth guard, service logic, Zod schemas, critical UI behaviour).
-Note: tests are written in a separate agent pass via generate-test.
+Note: tests are written in a separate agent pass via write-tests.
 
 ### Risks
 

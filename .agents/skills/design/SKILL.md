@@ -1,3 +1,11 @@
+---
+name: design
+description: UI design and review workflow. Explores existing patterns and docs/UI_DESIGN.md,
+  captures screenshots, proposes a design or audits a page, then delegates to
+  the staff-designer agent. Use when designing new UI, reviewing implemented
+  UI, or auditing a page against the design system.
+---
+
 # design
 
 UI design and review workflow. Understand the design goal, explore existing patterns, propose or audit, then delegate to staff-designer.
@@ -47,7 +55,7 @@ Delegate to staff-designer agent with the appropriate mode:
 - Mode B: new design proposal (provide spec)
 - Mode C: implemented feature review (provide screenshots + spec)
 
-Reference: `.agents/skills/design/references/design-evaluation-criteria.md`
+Reference: `.agents/skills/design/references/rubric.md`
 
 ## Phase 5 — Present
 

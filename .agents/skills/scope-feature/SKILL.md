@@ -1,6 +1,14 @@
-# research-feature
+---
+name: scope-feature
+description: Read-only feature scoping. Simplifies the spec to its minimum complete form,
+  produces 2–3 meaningfully different implementation options, and delegates to
+  the staff-engineer agent for a scored recommendation. Use when researching a
+  feature idea, weighing implementation approaches, or before writing a plan.
+---
 
-Read-only research workflow. Produces 2–3 implementation options for a feature, then delegates to staff-engineer for evaluation.
+# scope-feature
+
+Read-only scoping workflow. Produces 2–3 implementation options for a feature, then delegates to staff-engineer for evaluation.
 
 Read AGENTS.md before starting.
 
@@ -52,6 +60,6 @@ Delegate to staff-engineer agent (Mode A):
 
 - Provide the simplified spec
 - Provide all options
-- Provide the path to the relevant evaluation-criteria.md file: `.agents/skills/research-feature/references/evaluation-criteria.md`
+- Provide the path to the rubric: `.agents/skills/scope-feature/references/rubric.md`
 
 Present the staff-engineer's recommendation to the user with a short explanation.

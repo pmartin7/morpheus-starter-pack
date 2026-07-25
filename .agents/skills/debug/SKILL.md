@@ -1,6 +1,15 @@
-# fix-bug
+---
+name: debug
+description: Hypothesis-driven bug diagnosis. Reproduces the bug, explores the failing
+  code paths, generates root-cause hypotheses with evidence, and delegates to
+  the root-cause-analyst agent for validation and a scored fix recommendation.
+  Use when diagnosing bugs, investigating unexpected behaviour, or triaging
+  defects.
+---
 
-Hypothesis-driven bug diagnosis workflow. Reproduces the bug, generates hypotheses, delegates to bug-fixer-ninja for root cause analysis.
+# debug
+
+Hypothesis-driven bug diagnosis workflow. Reproduces the bug, generates hypotheses, delegates to root-cause-analyst for root cause analysis.
 
 Read AGENTS.md before starting.
 
@@ -39,13 +48,13 @@ Write 2–4 hypotheses about the root cause. For each:
 - Evidence for: what in the code supports this hypothesis
 - Evidence against: what in the code contradicts this hypothesis
 
-## Phase 5 — Bug Fixer Ninja Review
+## Phase 5 — Root Cause Review
 
-Delegate to bug-fixer-ninja agent:
+Delegate to root-cause-analyst agent:
 
 - Provide bug description + reproduction steps
 - Provide hypotheses with evidence
 - Provide file paths and relevant code excerpts
-- Reference `.agents/skills/fix-bug/references/fix-evaluation-criteria.md`
+- Reference `.agents/skills/debug/references/rubric.md`
 
-Present the ninja's root cause analysis and proposed fix to the user.
+Present the analyst's root cause analysis and proposed fix to the user.

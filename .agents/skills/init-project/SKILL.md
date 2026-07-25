@@ -1,3 +1,11 @@
+---
+name: init-project
+description: Conversational setup wizard that transforms a bare morpheus-starter clone
+  into a configured, deployed product in one session — product context, docs
+  generation, infrastructure provisioning, and first deploy. Use once, when
+  initializing a freshly cloned starter.
+---
+
 # init-project
 
 Conversational setup wizard. Transforms a bare morpheus-starter clone into a configured, deployed product in one agent session.
@@ -274,7 +282,7 @@ Only after `pnpm validate:deploy` passes, print:
 3. The **Firebase Console checklist** below — these are manual steps code
    cannot do, and auth is broken until the founder completes them
 4. List of available skills with triggers (from AGENTS.md section 9)
-5. Next suggested action: "Run /research-feature to plan your first feature"
+5. Next suggested action: "Run /scope-feature to plan your first feature"
 
 ### Firebase Console checklist (print verbatim in handoff)
 

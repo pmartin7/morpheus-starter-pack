@@ -1,3 +1,10 @@
+---
+name: add-blob-storage
+description: Wires Vercel Blob file storage into the app with an authenticated upload
+  endpoint and a File entity. Use when the product needs file uploads or
+  document storage.
+---
+
 # add-blob-storage
 
 Wires Vercel Blob file storage into the app. Adds upload endpoint, File entity, and auth protection.

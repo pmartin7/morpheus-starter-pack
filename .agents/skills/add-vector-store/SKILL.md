@@ -1,3 +1,10 @@
+---
+name: add-vector-store
+description: Wires Turbopuffer vector search into the app, including embedding generation
+  via the Vercel AI SDK and authenticated upsert/query endpoints. Use when the
+  product needs semantic search over documents, messages, or other content.
+---
+
 # add-vector-store
 
 Wires Turbopuffer vector search into the app. Adds embedding generation via Vercel AI SDK and upsert/query endpoints.

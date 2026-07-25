@@ -1,3 +1,11 @@
+---
+name: validate-app
+description: Runs the local and deployment validation harnesses (Playwright route checks,
+  deployment smoke checks) that prove the app actually works. Use after local
+  changes to web code or after a deployment, instead of eyeballing terminal
+  output.
+---
+
 # validate-app
 
 Runs the validation harnesses that prove the app actually works — locally and

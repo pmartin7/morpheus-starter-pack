@@ -31,8 +31,11 @@ Fork it. Run one command. Answer a few questions. You're live.
 
 ## Why Morpheus Exists
 
-Most founders who "vibe code" — building with AI assistants rather than writing every
-line by hand — hit the same wall: the AI produces code that works in isolation but
+Most founders who "vibe code" — [Andrej Karpathy's term](https://x.com/karpathy/status/1886192184808149383)
+for building with AI assistants rather than writing every line by hand, now the
+norm for a large share of new startups ([25% of a recent YC batch shipped
+codebases that were 95%+ AI-generated](https://www.businessinsider.com/vibe-coding-startups-impact-leaner-garry-tan-y-combinator-2025-3))
+— hit the same wall: the AI produces code that works in isolation but
 collapses under its own weight. No structure. No conventions. No validation. Three
 weeks in, the codebase is a maze of inconsistent patterns, duplicate logic, and
 mysterious bugs that the AI can't fix because it can't understand the mess it created.
@@ -90,7 +93,7 @@ Four pieces work together:
 1. **Skills** are playbooks. Each one is a step-by-step workflow the agent
    follows for a specific job: researching a feature, planning it, building it,
    writing tests, fixing a bug, reviewing a design. You invoke a skill by typing
-   its command in chat (e.g. `/research-feature`), and the agent runs the
+   its command in chat (e.g. `/scope-feature`), and the agent runs the
    playbook instead of improvising.
 2. **Agents** are specialists. Four expert roles live in `.agents/agents/`, and
    skills call on them automatically at review checkpoints — you never invoke
@@ -102,9 +105,9 @@ Four pieces work together:
      prompts, model calls, or retrieval, it reviews for token efficiency,
      output quality, and latency — and makes the judgement call when those
      three conflict.
-   - **Bug Fixer Ninja** — a surgical diagnostician. The `/fix-bug` skill hands
-     it your symptoms and a set of hypotheses; it reads the code, confirms or
-     refutes each one with evidence, and proposes the minimal fix.
+   - **Root Cause Analyst** — an evidence-driven diagnostician. The `/debug`
+     skill hands it your symptoms and a set of hypotheses; it reads the code,
+     confirms or refutes each one with evidence, and proposes the minimal fix.
    - **Staff Designer** — a senior product designer. The `/design` skill sends
      it screenshots of your pages (desktop and mobile); it reviews them against
      the design system and returns concrete, actionable fixes.
@@ -120,10 +123,10 @@ Four pieces work together:
 For any feature of real size, chain the four core skills:
 
 ```
-/research-feature → /plan-feature → /build-plan → /generate-test
+/scope-feature → /plan-feature → /build-plan → /write-tests
 ```
 
-Research explores your codebase and proposes 2-3 approaches (with a Staff
+Scoping explores your codebase and proposes 2-3 approaches (with a Staff
 Engineer verdict). Plan turns the winner into a file-by-file implementation
 plan (audited again). Build implements it. Test writes tests in an independent
 pass, so the tests check behavior rather than mirroring the implementation.
@@ -138,13 +141,13 @@ ceremony. Just describe them in chat and let the agent edit directly.
   already encode _how_ things are built here; your job is to say _what_.
 - **Match the ceremony to the change.** Multi-file features get the full
   research → plan → build → test loop. One-file tweaks go straight to chat.
-  When in doubt, start with `/research-feature` — it's cheap and it thinks
+  When in doubt, start with `/scope-feature` — it's cheap and it thinks
   before you commit.
 - **One task per conversation.** Agents do their best work with a focused
   context. Finish (or abandon) one feature before starting the next, and start
   a fresh chat for unrelated work.
-- **Report bugs as symptoms, not diagnoses.** Give `/fix-bug` what you saw,
-  what you expected, and how to reproduce it. Let the Bug Fixer Ninja find the
+- **Report bugs as symptoms, not diagnoses.** Give `/debug` what you saw,
+  what you expected, and how to reproduce it. Let the Root Cause Analyst find the
   cause — pre-diagnosing sends it down your rabbit hole instead of the right one.
 - **Run `/design` whenever the UI changes.** It screenshots every route at
   desktop and mobile widths and has the Staff Designer review them — catching
@@ -179,26 +182,37 @@ have to guess. They read the docs, follow the pattern, and produce code that fit
 Anything an agent can't access in its working context doesn't exist. No Slack
 threads, no Google Docs, no "I told it last week." Every convention, every
 architectural decision, every style rule lives in versioned markdown files that
-agents read before they act.
+agents read before they act. This is the core practice behind
+[OpenAI's harness engineering](https://openai.com/index/harness-engineering/):
+the repo's `docs/` directory is the knowledge base, and agents navigate it
+rather than relying on external context.
 
 ### Mechanical enforcement over documentation
 
 Rules that can be checked by a machine should be checked by a machine. `pnpm check`
 runs linting and type-checking. `pnpm validate` adds tests. Agents run these
 commands after every change. A broken build gets caught in seconds, not days.
+OpenAI's harness team applies the same rule: invariants live in
+[lints and CI jobs, not prose](https://openai.com/index/harness-engineering/).
 
 ### YAGNI, relentlessly
 
 Morpheus includes exactly what you need to ship a working AI product prototype. No admin
 panels, no role-based access control, no pagination, no dark mode, no
 internationalization. Those are real features for real products — add them when you
-need them, using the agent skills that are already wired up.
+need them, using the agent skills that are already wired up. This mirrors
+Anthropic's first principle for agent systems: [simple, composable patterns —
+add complexity only when it demonstrably improves outcomes](https://www.anthropic.com/engineering/building-effective-agents).
 
 ### Progressive disclosure for agents
 
 Agents start at `AGENTS.md` (a table of contents, not an encyclopedia), then read
 only the docs relevant to their task. No agent needs more than 2-3 documents to
-operate. This keeps context windows focused and output quality high.
+operate. This keeps context windows focused and output quality high — what
+Anthropic calls finding the ["smallest set of high-signal tokens"](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents),
+and the same three-tier model behind the [Agent Skills open standard](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)
+that Morpheus's skill files follow: frontmatter for discovery, `SKILL.md` on
+trigger, `references/` on demand.
 
 ---
 
@@ -300,7 +314,7 @@ use the agent skills described in [Available Skills](#available-skills-agent-com
 For example, to add a new feature:
 
 ```
-/research-feature I want to add a document upload feature where users can upload
+/scope-feature I want to add a document upload feature where users can upload
 PDFs and the AI can answer questions about them
 ```
 
@@ -472,13 +486,13 @@ or Codex:
 ```
 Think about what you want to build
         ↓
-/research-feature  (explore options, get staff review)
+/scope-feature     (explore options, get staff review)
         ↓
 /plan-feature      (detailed implementation plan)
         ↓
 /build-plan        (agent implements the plan)
         ↓
-/generate-test     (separate agent writes tests)
+/write-tests       (separate agent writes tests)
         ↓
 git push           (auto-deploys to Vercel)
         ↓
@@ -487,7 +501,7 @@ Repeat
 
 You don't have to use every step for every change. Small tweaks can go straight
 to implementation. But for anything that touches multiple files or introduces a
-new concept, the research → plan → build → test cycle keeps the codebase clean.
+new concept, the scope → plan → build → test cycle keeps the codebase clean.
 
 **Key commands to remember:**
 
@@ -508,15 +522,15 @@ purpose in your task description.
 
 ### Core workflow
 
-| Command             | What it does                                                                                     |
-| ------------------- | ------------------------------------------------------------------------------------------------ |
-| `/init-project`     | One-time setup wizard — configures your app and deploys it                                       |
-| `/research-feature` | Researches a feature idea — explores the codebase, proposes 2-3 options, gets staff-level review |
-| `/plan-feature`     | Creates a detailed implementation plan from research                                             |
-| `/build-plan`       | Implements a plan — builds in dependency order, validates with `pnpm check`                      |
-| `/fix-bug`          | Diagnoses a bug — forms hypotheses, tests them against code, recommends a fix                    |
-| `/generate-test`    | Writes tests for existing code — runs independently from the implementer                         |
-| `/design`           | Reviews or proposes UI design — takes browser screenshots, checks against design system          |
+| Command          | What it does                                                                                 |
+| ---------------- | -------------------------------------------------------------------------------------------- |
+| `/init-project`  | One-time setup wizard — configures your app and deploys it                                   |
+| `/scope-feature` | Scopes a feature idea — explores the codebase, proposes 2-3 options, gets staff-level review |
+| `/plan-feature`  | Creates a detailed implementation plan from scoping                                          |
+| `/build-plan`    | Implements a plan — builds in dependency order, validates with `pnpm check`                  |
+| `/debug`         | Diagnoses a bug — forms hypotheses, tests them against code, recommends a fix                |
+| `/write-tests`   | Writes tests for existing code — runs independently from the implementer                     |
+| `/design`        | Reviews or proposes UI design — takes browser screenshots, checks against design system      |
 
 ### Utilities
 
@@ -688,8 +702,8 @@ builds, or you can ask the agent to remove it).
 Ask the agent:
 
 ```
-/research-feature I need to track user projects. Each project has a name,
-description, and belongs to a user. Research the best approach.
+/scope-feature I need to track user projects. Each project has a name,
+description, and belongs to a user. Scope the best approach.
 ```
 
 It will create a new entity extending `BaseEntity`, add a MikroORM migration,
@@ -699,19 +713,30 @@ patterns.
 **Q: What's the difference between "skills" and "agents"?**
 
 **Skills** are workflows — step-by-step instructions for accomplishing a task
-(like "research a feature" or "write tests"). **Agents** are specialist roles
-(like "staff engineer" or "bug fixer") that skills delegate to for expert
-evaluation. Think of skills as the playbook and agents as the specialists on
-the team.
+(like "scope a feature" or "write tests"). **Agents** are specialist roles
+(like "staff engineer" or "root cause analyst") that skills delegate to for
+expert evaluation. Think of skills as the playbook and agents as the
+specialists on the team.
 
 ---
 
-## Credits
+## Grounding & Further Reading
 
-Morpheus was built by [Pierre Martin](https://pierre-martin.com), drawing on patterns
-proven across production deployments at companies building with AI. The agent
-operating system is informed by [OpenAI's harness engineering](https://openai.com/index/harness-engineering/)
-principles and years of running autonomous coding workflows.
+Morpheus was built by [Pierre Martin](https://pierre-martin.com). Its agent
+operating system is grounded in publicly documented industry practice. If you
+want to understand _why_ the framework is shaped the way it is, these are the
+sources:
+
+| Source                                                                                                                                                                                                                                    | What Morpheus takes from it                                                                                                                          |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [OpenAI — Harness engineering](https://openai.com/index/harness-engineering/) (Feb 2026)                                                                                                                                                  | `AGENTS.md` as a ~100-line table of contents; `docs/` as the system of record; mechanical enforcement via lints and CI; plans as versioned artifacts |
+| [Anthropic — Building effective agents](https://www.anthropic.com/engineering/building-effective-agents)                                                                                                                                  | Simple, composable patterns over frameworks; add complexity only when it measurably improves outcomes                                                |
+| [Anthropic — Effective context engineering for AI agents](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents)                                                                                              | The "smallest set of high-signal tokens" principle; just-in-time retrieval; sub-agents with clean context returning distilled summaries              |
+| [Anthropic — Equipping agents for the real world with Agent Skills](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)                                                                          | The `SKILL.md` open standard Morpheus skills follow: YAML frontmatter for discovery, lean bodies, `references/` loaded on demand                     |
+| [Claude Code — Lessons on using skills](https://claude.com/blog/lessons-from-building-claude-code-how-we-use-skills)                                                                                                                      | One concern per skill; the file system as progressive disclosure                                                                                     |
+| [AGENTS.md open standard](https://agents.md/)                                                                                                                                                                                             | The cross-tool `AGENTS.md` convention (Cursor, Codex, Claude Code, and others)                                                                       |
+| [Andrej Karpathy — vibe coding](https://x.com/karpathy/status/1886192184808149383) (Feb 2025) and its evolution into [agentic engineering](https://www.fundesk.io/from-vibe-coding-to-agentic-engineering-karpathy-software-3) (Feb 2026) | The thesis: orchestrating agents is an engineering discipline — specs, reviews, tests, and evals, not improvisation                                  |
+| [Garry Tan / Y Combinator on AI-built startups](https://www.businessinsider.com/vibe-coding-startups-impact-leaner-garry-tan-y-combinator-2025-3)                                                                                         | The market context: founders shipping products with 95%+ AI-generated code need guardrails like these                                                |
 
 ---
 

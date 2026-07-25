@@ -35,10 +35,13 @@ Do not over-test: NestJS decorator wiring, static markup, Tailwind classes.
 Two-pass approach:
 
 - Pass A: implement the feature
-- Pass B: a separate agent writes tests via `generate-test` skill
+- Pass B: a separate agent writes tests via `write-tests` skill
 
 Why: reduces "code shaped to satisfy tests" anti-pattern, improves independent
-verification.
+verification. This is the sub-agent pattern from
+[Anthropic's context engineering guidance](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents):
+a fresh context window prevents the tester from inheriting the implementer's
+assumptions.
 
 ## 4) File Placement
 

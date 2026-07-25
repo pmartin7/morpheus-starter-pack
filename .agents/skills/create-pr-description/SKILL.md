@@ -1,3 +1,10 @@
+---
+name: create-pr-description
+description: Generates a pull request description from the branch's git diff and the
+  conversation context, written to .agents/tmp/. Use when preparing a PR for
+  review.
+---
+
 # create-pr-description
 
 Generates a pull request description from git diff and conversation context.
