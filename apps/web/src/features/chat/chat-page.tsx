@@ -19,9 +19,7 @@ export function ChatPage(): JSX.Element {
     <div className="flex flex-col h-[calc(100vh-56px)]">
       <div className="flex-1 overflow-y-auto px-4 py-6 space-y-3">
         {messages.length === 0 && (
-          <p className="text-center text-sm text-ink-muted mt-16">
-            Start a conversation
-          </p>
+          <p className="text-center text-sm text-ink-muted mt-16">Start a conversation</p>
         )}
         {messages.map((m) => (
           <ChatMessage key={m.id} role={m.role as 'user' | 'assistant'} content={m.content} />

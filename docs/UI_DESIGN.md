@@ -24,19 +24,19 @@ All UI code uses these tokens (as Tailwind utilities: `text-ink`, `bg-card`,
 `text-red-500`, …) are forbidden — restyling the app must only ever require
 editing the token values in `globals.css`.
 
-| Token | Value | Usage |
-|-------|-------|-------|
-| primary | #3B82F6 | interactive elements only |
-| primary-hover | #2563EB | hover state of primary elements |
+| Token              | Value   | Usage                             |
+| ------------------ | ------- | --------------------------------- |
+| primary            | #3B82F6 | interactive elements only         |
+| primary-hover      | #2563EB | hover state of primary elements   |
 | primary-foreground | #FFFFFF | text/icons on primary backgrounds |
-| surface | #FAFAFA | page background |
-| surface-alt | #F1F5F9 | section alternation, subtle fills |
-| card | #FFFFFF | cards, nav, elevated surfaces |
-| ink | #1A1B1E | body text, headings |
-| ink-muted | #64748B | metadata, captions, placeholders |
-| border | #E5E7EB | default borders and dividers |
-| border-strong | #D1D5DB | emphasized borders |
-| destructive | #EF4444 | error states, destructive actions |
+| surface            | #FAFAFA | page background                   |
+| surface-alt        | #F1F5F9 | section alternation, subtle fills |
+| card               | #FFFFFF | cards, nav, elevated surfaces     |
+| ink                | #1A1B1E | body text, headings               |
+| ink-muted          | #64748B | metadata, captions, placeholders  |
+| border             | #E5E7EB | default borders and dividers      |
+| border-strong      | #D1D5DB | emphasized borders                |
+| destructive        | #EF4444 | error states, destructive actions |
 
 Primary color is for interactive elements only — never backgrounds, never body
 text.
@@ -45,11 +45,11 @@ text.
 
 Font tokens in `globals.css` (same lockstep rule as colors):
 
-| Token | Font | Use |
-|-------|------|-----|
-| --font-sans | Inter | body, nav, buttons, metadata, all chrome |
-| --font-display | Inter | headings, hero copy |
-| --font-mono | system monospace | code, technical values |
+| Token          | Font             | Use                                      |
+| -------------- | ---------------- | ---------------------------------------- |
+| --font-sans    | Inter            | body, nav, buttons, metadata, all chrome |
+| --font-display | Inter            | headings, hero copy                      |
+| --font-mono    | system monospace | code, technical values                   |
 
 V1 uses Inter for sans and display. Init-project sets product-specific fonts
 (update the tokens **and** the `<link>` font loading in `apps/web/index.html`).

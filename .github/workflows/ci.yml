@@ -2,12 +2,16 @@ name: CI
 
 on:
   push:
-    branches: [main, staging]
+    branches: [staging, main]
   pull_request:
+    branches: [staging, main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build:
-    name: Clean-checkout build
+  check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,13 +20,21 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: pnpm
 
       # Frozen lockfile from a clean checkout catches undeclared dependencies
       # that only resolve locally through hoisting.
       - run: pnpm install --frozen-lockfile
 
-      - run: pnpm check
+      - name: Format check
+        run: pnpm format:check
 
-      - run: pnpm build
+      - name: Lint and type-check
+        run: pnpm check
+
+      - name: Tests
+        run: pnpm test
+
+      - name: Build
+        run: pnpm build

@@ -3,11 +3,16 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "files": ["base.js", "react.js", "nestjs.js"],
+  "files": [
+    "base.js",
+    "react.js",
+    "nestjs.js"
+  ],
   "peerDependencies": {
-    "eslint": ">=9"
+    "eslint": "^9"
   },
   "dependencies": {
+    "eslint-config-prettier": "^10.1.8",
     "typescript-eslint": "^8.0.0",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-jsx-a11y": "^6.8.0"

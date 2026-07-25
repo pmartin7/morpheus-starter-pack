@@ -442,7 +442,7 @@ Agents start at `AGENTS.md`, then read only the docs relevant to their current t
 Anything an agent cannot access in-context while running effectively does not exist. No Slack threads, no Google Docs, no tribal knowledge. Everything goes into versioned markdown.
 
 **Enforce invariants mechanically, not through prose.**
-Where possible, encode rules as lints, CI jobs, or validation commands rather than documentation-only. `pnpm check` is the mechanical enforcement; docs explain the *why*.
+Where possible, encode rules as lints, CI jobs, or validation commands rather than documentation-only. `pnpm check` is the mechanical enforcement; docs explain the _why_.
 
 **Token-efficient docs: no duplication across files.**
 Each fact lives in exactly one place. Other docs reference it with a relative link. If two files contain the same information, one of them is wrong (or will be soon).
@@ -483,26 +483,26 @@ glossary, and editorial positioning.
 
 Turborepo monorepo:
 
-apps/web          Vite + React + Tailwind + shadcn SPA
-apps/api          NestJS REST API + MikroORM + Vercel AI SDK
-packages/shared   Zod schemas + inferred TypeScript types
+apps/web Vite + React + Tailwind + shadcn SPA
+apps/api NestJS REST API + MikroORM + Vercel AI SDK
+packages/shared Zod schemas + inferred TypeScript types
 packages/tsconfig Shared TypeScript base configs
 packages/eslint-config Shared ESLint flat configs
-docs/             Style guide, testing, logging, UI design
-.agents/skills/   Agent skills (workflows) — source of truth
-.agents/rules/    Always-on agent rules — source of truth
-.agents/agents/   Agent role definitions
-.cursor/skills/   → symlink to .agents/skills/
-.cursor/rules/    → symlink to .agents/rules/
-.cursor/agents/   → symlink to .agents/agents/
+docs/ Style guide, testing, logging, UI design
+.agents/skills/ Agent skills (workflows) — source of truth
+.agents/rules/ Always-on agent rules — source of truth
+.agents/agents/ Agent role definitions
+.cursor/skills/ → symlink to .agents/skills/
+.cursor/rules/ → symlink to .agents/rules/
+.cursor/agents/ → symlink to .agents/agents/
 
 ## 3) Quick Start
 
 pnpm install
-pnpm dev          # starts web (:5173) + api (:3000)
+pnpm dev # starts web (:5173) + api (:3000)
 pnpm build
-pnpm check        # lint + type-check
-pnpm validate     # check + tests
+pnpm check # lint + type-check
+pnpm validate # check + tests
 pnpm test
 
 ## 4) Stack
@@ -559,23 +559,24 @@ pnpm test
 
 ## 9) Available Skills
 
-| Skill | Trigger | Purpose |
-|-------|---------|---------|
-| init-project | /init-project | Conversational setup wizard |
-| research-feature | /research-feature | Research + simplify + options + staff review |
-| plan-feature | /plan-feature | Create implementation plan from research |
-| build-plan | /build-plan | Implement plan with parallel subagents |
-| fix-bug | /fix-bug | Diagnose bugs via hypotheses + ninja review |
-| generate-test | /generate-test | Independent P0 test writing |
-| design | /design | UI design / review + staff-designer |
-| add-logs | /add-logs | Insert structured logging |
-| create-pr-description | /create-pr | PR description from git diff |
-| add-vector-store | /add-vector-store | Wire Turbopuffer vector search |
-| add-blob-storage | /add-blob-storage | Wire Vercel Blob file storage |
+| Skill                 | Trigger           | Purpose                                      |
+| --------------------- | ----------------- | -------------------------------------------- |
+| init-project          | /init-project     | Conversational setup wizard                  |
+| research-feature      | /research-feature | Research + simplify + options + staff review |
+| plan-feature          | /plan-feature     | Create implementation plan from research     |
+| build-plan            | /build-plan       | Implement plan with parallel subagents       |
+| fix-bug               | /fix-bug          | Diagnose bugs via hypotheses + ninja review  |
+| generate-test         | /generate-test    | Independent P0 test writing                  |
+| design                | /design           | UI design / review + staff-designer          |
+| add-logs              | /add-logs         | Insert structured logging                    |
+| create-pr-description | /create-pr        | PR description from git diff                 |
+| add-vector-store      | /add-vector-store | Wire Turbopuffer vector search               |
+| add-blob-storage      | /add-blob-storage | Wire Vercel Blob file storage                |
 
 ## 10) Anti-Patterns
 
 Do not:
+
 - introduce a second UI system or component library
 - mix validation systems (Zod only)
 - add default exports
@@ -617,14 +618,14 @@ Named exports only. No default exports.
 
 ## 4) Naming
 
-| Kind | Convention | Example |
-|------|-----------|---------|
-| files | kebab-case | `user.service.ts` |
-| components | PascalCase | `ChatInput` |
-| hooks | `use-*` | `use-auth.ts` |
-| schemas | `*Schema` | `CreateUserSchema` |
-| constants | SCREAMING_SNAKE_CASE | `MAX_RETRY_COUNT` |
-| variables/functions | camelCase | `getOrCreate` |
+| Kind                | Convention           | Example            |
+| ------------------- | -------------------- | ------------------ |
+| files               | kebab-case           | `user.service.ts`  |
+| components          | PascalCase           | `ChatInput`        |
+| hooks               | `use-*`              | `use-auth.ts`      |
+| schemas             | `*Schema`            | `CreateUserSchema` |
+| constants           | SCREAMING_SNAKE_CASE | `MAX_RETRY_COUNT`  |
+| variables/functions | camelCase            | `getOrCreate`      |
 
 ## 5) Imports
 
@@ -679,13 +680,14 @@ Testing conventions for this repository.
 
 Vitest for all apps and packages. One test runner, one config pattern.
 
-| App | Plugin | Environment |
-|-----|--------|------------|
-| apps/api | unplugin-swc (decorator support) | node |
-| apps/web | — | jsdom |
-| packages/shared | — | node |
+| App             | Plugin                           | Environment |
+| --------------- | -------------------------------- | ----------- |
+| apps/api        | unplugin-swc (decorator support) | node        |
+| apps/web        | —                                | jsdom       |
+| packages/shared | —                                | node        |
 
 Commands:
+
 - `pnpm test` — all tests
 - `pnpm test --filter=@morpheus/api` — API tests only
 - `pnpm validate` — lint + type-check + tests
@@ -693,6 +695,7 @@ Commands:
 ## 2) Philosophy
 
 Test behavior, not implementation. Priorities:
+
 1. Zod schema validation boundaries
 2. Auth guard logic (token verification, user sync)
 3. Service business logic (CRUD, ownership checks)
@@ -704,6 +707,7 @@ Do not over-test: NestJS decorator wiring, static markup, Tailwind classes.
 ## 3) Separate-Agent Workflow
 
 Two-pass approach:
+
 - Pass A: implement the feature
 - Pass B: a separate agent writes tests via `generate-test` skill
 
@@ -723,6 +727,7 @@ AAA pattern: Arrange, Act, Assert. One assert cluster per `it` block.
 ## 6) Mocks
 
 Mock at boundaries only:
+
 - Firebase Admin SDK (`verifyIdToken`)
 - Vercel AI SDK (`streamText`)
 - MikroORM EntityManager (`find`, `create`, `flush`)
@@ -761,10 +766,10 @@ Logging rules for this repository.
 
 ## 1) Logger Strategy
 
-| App | Library | Package |
-|-----|---------|---------|
+| App      | Library                       | Package                    |
+| -------- | ----------------------------- | -------------------------- |
 | apps/api | nestjs-pino (wraps pino-http) | `nestjs-pino`, `pino-http` |
-| apps/web | pino/browser | `pino` |
+| apps/web | pino/browser                  | `pino`                     |
 
 Development: pretty-print via `pino-pretty`.
 Production: JSON to stdout (Vercel captures, optional Axiom drain).
@@ -781,6 +786,7 @@ Production: JSON to stdout (Vercel captures, optional Axiom drain).
 ## 3) What Not to Log
 
 Never:
+
 - secrets, tokens, API keys
 - full message content or chat history
 - full request/response payloads
@@ -790,11 +796,11 @@ Log IDs, counts, slugs — not full content.
 
 ## 4) Log Levels
 
-| Level | Use |
-|-------|-----|
-| debug | local troubleshooting |
-| info | successful major operation |
-| warn | degraded but recoverable |
+| Level | Use                                   |
+| ----- | ------------------------------------- |
+| debug | local troubleshooting                 |
+| info  | successful major operation            |
+| warn  | degraded but recoverable              |
 | error | failed operation or broken assumption |
 
 ## 5) Required Context Fields
@@ -809,6 +815,7 @@ Redact `request.headers.authorization` in nestjs-pino config.
 ## 7) Observability (optional)
 
 Axiom free tier: 500GB/mo, 30-day retention. Setup:
+
 1. Create Axiom account → dataset
 2. Vercel dashboard → Log Drains → add Axiom (requires Pro plan)
 3. Or: use `pino-axiom` transport in nestjs-pino config with AXIOM_TOKEN env var
@@ -841,23 +848,23 @@ spacing, and component patterns.
 
 ## 2) Color Palette
 
-| Token | Value | Usage |
-|-------|-------|-------|
-| primary | {PRIMARY_COLOR:#3B82F6} | interactive elements only |
-| surface | {SURFACE_COLOR:#FAFAFA} | page background |
-| surface-alt | {SURFACE_ALT:#F1F5F9} | section alternation |
-| text | #1A1B1E | body text |
-| text-secondary | #64748B | metadata, captions |
-| destructive | #EF4444 | error states |
+| Token          | Value                   | Usage                     |
+| -------------- | ----------------------- | ------------------------- |
+| primary        | {PRIMARY_COLOR:#3B82F6} | interactive elements only |
+| surface        | {SURFACE_COLOR:#FAFAFA} | page background           |
+| surface-alt    | {SURFACE_ALT:#F1F5F9}   | section alternation       |
+| text           | #1A1B1E                 | body text                 |
+| text-secondary | #64748B                 | metadata, captions        |
+| destructive    | #EF4444                 | error states              |
 
 Primary color is for interactive elements only — never backgrounds, never body
 text.
 
 ## 3) Typography
 
-| Tier | Font | Use |
-|------|------|-----|
-| UI | Inter | nav, buttons, metadata, all chrome |
+| Tier | Font  | Use                                |
+| ---- | ----- | ---------------------------------- |
+| UI   | Inter | nav, buttons, metadata, all chrome |
 
 V1 uses Inter for all tiers. Init-project may add display/body fonts.
 
@@ -934,6 +941,7 @@ All 13 skill files live under `.agents/skills/` (symlinked from `.cursor/skills/
 - References to evaluation criteria and docs by relative path
 
 Skills included:
+
 1. `init-project/SKILL.md` — 6-phase conversational wizard
 2. `research-feature/SKILL.md` — 5-phase read-only research workflow
 3. `research-feature/references/evaluation-criteria.md` — 6-criterion rubric
@@ -966,11 +974,11 @@ it describes your specific product's topology.
 
 ### Route Map
 
-| Route | Page | Auth |
-|-------|------|------|
-| / | Landing page | No |
-| /login | Firebase auth | No |
-| /chat | AI chat interface | Yes |
+| Route  | Page              | Auth |
+| ------ | ----------------- | ---- |
+| /      | Landing page      | No   |
+| /login | Firebase auth     | No   |
+| /chat  | AI chat interface | Yes  |
 
 ### Entity Model
 

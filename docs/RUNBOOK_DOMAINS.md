@@ -36,10 +36,10 @@ GET /v5/domains/<domain>
 
 Two fields matter:
 
-| Field | Meaning |
-|-------|---------|
+| Field          | Meaning                                           |
+| -------------- | ------------------------------------------------- |
 | `nsVerifiedAt` | non-null once Vercel has verified the nameservers |
-| `zone` | the DNS zone Vercel is serving for the domain |
+| `zone`         | the DNS zone Vercel is serving for the domain     |
 
 Until `nsVerifiedAt` is set, nothing downstream (zone, certs) will work — and
 that is normal, not an error.
@@ -47,9 +47,9 @@ that is normal, not an error.
 ## 3) Confusing-but-Normal Intermediate States
 
 - **"DNS zone not enabled" / "cannot solve dns-01 challenge"** in the
-  dashboard *before* nameserver verification: expected. Do nothing; wait for
+  dashboard _before_ nameserver verification: expected. Do nothing; wait for
   `nsVerifiedAt`.
-- **Apex + `www` certificates** auto-issue within minutes *after*
+- **Apex + `www` certificates** auto-issue within minutes _after_
   `nsVerifiedAt`. No action needed.
 
 ## 4) The Straggler: Subdomain Certificates
@@ -64,12 +64,12 @@ POST /v7/certs
 
 ## 5) When to Wait vs. Act
 
-| Signal | Response |
-|--------|----------|
-| Dashboard warning, `nsVerifiedAt` still null | wait (propagation) |
-| `nsVerifiedAt` set, apex/www certs pending a few minutes | wait |
-| `nsVerifiedAt` set, subdomain cert still missing | act — force via `/v7/certs` |
-| Explicit API error on a cert or domain call | act on that error |
+| Signal                                                   | Response                    |
+| -------------------------------------------------------- | --------------------------- |
+| Dashboard warning, `nsVerifiedAt` still null             | wait (propagation)          |
+| `nsVerifiedAt` set, apex/www certs pending a few minutes | wait                        |
+| `nsVerifiedAt` set, subdomain cert still missing         | act — force via `/v7/certs` |
+| Explicit API error on a cert or domain call              | act on that error           |
 
 ## 6) Redirect Domains (e.g. www → apex)
 

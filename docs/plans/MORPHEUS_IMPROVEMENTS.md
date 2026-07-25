@@ -112,7 +112,10 @@ Vercel expected it.
 in each app:
 
 ```json
-{ "extends": "@morpheus/tsconfig/nestjs.json", "compilerOptions": { "outDir": "./dist", "rootDir": "./src" } }
+{
+  "extends": "@morpheus/tsconfig/nestjs.json",
+  "compilerOptions": { "outDir": "./dist", "rootDir": "./src" }
+}
 ```
 
 Keep `mikro-orm.config.ts` inside `src/` so it compiles into `dist/` with
@@ -166,7 +169,7 @@ starter so every derived project starts with agent-usable feedback loops.
 Playwright script that boots the web dev server (or reuses a running one),
 visits each route, and fails on: console errors, page errors, failed network
 requests, or an **empty `#root`** (the blank-page class of failure). Saves
-full-page screenshots to `harness/artifacts/` so agents can *look* at the UI.
+full-page screenshots to `harness/artifacts/` so agents can _look_ at the UI.
 Exit code 0/1/2 with one-line remediation hints on every failure
 (e.g. "run `pnpm exec playwright install chromium`").
 
@@ -236,7 +239,7 @@ SSO redirect on staging as expected, not a failure.
 
 **Problem observed:** the DNS/TLS phase had several confusing intermediate
 states that look like errors but are just propagation: "DNS zone not enabled /
-cannot solve dns-01" in the Vercel dashboard *before* nameserver verification;
+cannot solve dns-01" in the Vercel dashboard _before_ nameserver verification;
 apex + www certs auto-issuing minutes after `nsVerifiedAt`; the **subdomain
 cert not auto-issuing** and needing a forced issuance
 (`POST /v7/certs {"cns":["staging.<domain>"]}`).

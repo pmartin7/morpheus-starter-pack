@@ -7,6 +7,7 @@ Read AGENTS.md and docs/UI_DESIGN.md before starting.
 ## Phase 1 — Understand
 
 Ask the user:
+
 1. New design or existing page audit?
 2. Which page or component?
 3. What is the design goal? (new feature, redesign, accessibility fix)
@@ -15,6 +16,7 @@ Ask the user:
 ## Phase 2 — Explore
 
 Read:
+
 - `docs/UI_DESIGN.md` — colors, typography, spacing, components
 - Existing component files in `apps/web/src/components/ui/`
 - The relevant page/feature files
@@ -40,6 +42,7 @@ visually inspect the screenshots.
 ## Phase 4 — Staff Designer Review
 
 Delegate to staff-designer agent with the appropriate mode:
+
 - Mode A: existing page audit (provide screenshots + issues found)
 - Mode B: new design proposal (provide spec)
 - Mode C: implemented feature review (provide screenshots + spec)

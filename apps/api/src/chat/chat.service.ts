@@ -42,19 +42,28 @@ export class ChatService {
     });
     await this.em.flush();
 
-    const history = await this.em.find(Message, { conversation }, { orderBy: { createdAt: 'asc' } });
-    const messages = history.map((m) => ({ role: m.role as 'user' | 'assistant', content: m.content }));
+    const history = await this.em.find(
+      Message,
+      { conversation },
+      { orderBy: { createdAt: 'asc' } },
+    );
+    const messages = history.map((m) => ({
+      role: m.role as 'user' | 'assistant',
+      content: m.content,
+    }));
 
     const stream = await this.aiService.stream(messages);
 
-    stream.text.then(async (assistantText: string) => {
-      this.em.create(Message, {
-        conversation,
-        role: MessageRole.ASSISTANT,
-        content: assistantText,
-      });
-      await this.em.flush();
-    }).catch(() => {});
+    stream.text
+      .then(async (assistantText: string) => {
+        this.em.create(Message, {
+          conversation,
+          role: MessageRole.ASSISTANT,
+          content: assistantText,
+        });
+        await this.em.flush();
+      })
+      .catch(() => {});
 
     return stream;
   }

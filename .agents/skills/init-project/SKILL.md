@@ -26,12 +26,14 @@ Use the AskQuestion tool to collect:
 ## Phase 2 — Generate AGENTS.md
 
 Rewrite `AGENTS.md` with:
+
 - Section 1 (Product Context): product description, target user, domain glossary (5–10 key terms), editorial positioning
 - Keep all other sections exactly as-is
 
 ## Phase 3 — Generate ARCHITECTURE.md
 
 Rewrite `ARCHITECTURE.md` with:
+
 - Route map updated for the product's actual pages
 - Entity model updated if product needs additional entities
 - Data flow section updated for the actual features
@@ -58,12 +60,12 @@ than duplicating it:
    adjectives, color/font preferences, reference aesthetic, and what to avoid.
 2. **Research** — one or two web searches: current design trends for this
    product's category, plus the visual vocabulary the adjectives imply (e.g.
-   "samurai/zen" → traditional Japanese palette and *ma*, not cherry-blossom
+   "samurai/zen" → traditional Japanese palette and _ma_, not cherry-blossom
    kitsch). Note both what to adopt and which trend-traps to avoid (generic
    dark-mode+neon, glassmorphism, etc.).
 3. **Propose** — 2–3 named design directions, each with palette + type pairing
-   + layout attitude and a one-paragraph rationale. Recommend one. If the user
-   pre-answered the init questions, apply the recommendation without blocking.
+   - layout attitude and a one-paragraph rationale. Recommend one. If the user
+     pre-answered the init questions, apply the recommendation without blocking.
 4. **Apply in code** — the design system is fully tokenized, so this is small:
    - `apps/web/src/styles/globals.css` — update the `@theme` token values
      (colors and `--font-sans` / `--font-display` / `--font-mono`)
@@ -169,7 +171,7 @@ Run these shell commands in sequence. Stop and report if any fails.
 # Create GitHub repo
 gh repo create {PROJECT_NAME} --public --source=. --remote=origin --push
 
-# Install dependencies
+# Install dependencies (also installs the husky pre-commit hook)
 pnpm install
 
 # Install the Playwright browser used by the validation harnesses — without
@@ -181,23 +183,71 @@ pnpm exec playwright install chromium
 
 # Link to Vercel
 vercel link
+```
 
-# Add environment secrets
-vercel env add NEON_DATABASE_URL production
-vercel env add FIREBASE_PROJECT_ID production
-vercel env add FIREBASE_PRIVATE_KEY production
-vercel env add FIREBASE_CLIENT_EMAIL production
-vercel env add DEFAULT_AI_MODEL production        # skip if chat removed
-vercel env add ANTHROPIC_API_KEY production       # if anthropic
-vercel env add OPENAI_API_KEY production          # if openai
+### Environment topology
 
-# Run initial migration
-pnpm migrate:up
+One Neon project, three DB branches mirroring git (see ARCHITECTURE.md
+"Deployment & Environments" for the full table). Set everything up **before**
+the first push — Vercel snapshots env vars per deployment, so vars added after
+a push do not apply until the next one. Skip the staging pieces gracefully if
+the founder declines a staging environment.
 
-# Push and deploy
+1. **Git**: create and push a `staging` branch from `main`:
+   `git branch staging && git push -u origin staging`
+2. **Neon** (via `neon` CLI or MCP): in the founder's project, create branch
+   `staging` (parent: `production`) and `dev` (parent: `staging`). Write the
+   `dev` branch **direct** connection string into local `.env` as
+   `NEON_DATABASE_URL`.
+3. **GitHub**: create environments and per-environment migration secrets:
+
+   ```bash
+   gh api repos/{owner}/{repo}/environments/staging -X PUT
+   gh api repos/{owner}/{repo}/environments/production -X PUT
+   gh secret set NEON_DATABASE_URL --env staging --body "<staging direct URL>"
+   gh secret set NEON_DATABASE_URL --env production --body "<production direct URL>"
+   ```
+
+4. **Vercel**: runtime env vars use **pooled** (`-pooler`) URLs:
+
+   ```bash
+   vercel env add NEON_DATABASE_URL production        # production pooled URL
+   vercel env add NEON_DATABASE_URL preview staging   # staging pooled URL, scoped to the staging branch
+   vercel env add FIREBASE_PROJECT_ID production
+   vercel env add FIREBASE_PRIVATE_KEY production
+   vercel env add FIREBASE_CLIENT_EMAIL production
+   vercel env add DEFAULT_AI_MODEL production        # skip if chat removed
+   vercel env add ANTHROPIC_API_KEY production       # if anthropic
+   vercel env add OPENAI_API_KEY production          # if openai
+   ```
+
+5. Do **not** create a Vercel custom environment for staging on the Hobby
+   plan — it fails with `Cannot create more than 0 custom environments`
+   (Pro-only). Instead, add a `staging.<domain>` domain to the Vercel project
+   pinned to the `staging` branch for a stable branch-scoped Preview URL.
+   Preview deployments have Vercel SSO deployment protection enabled by
+   default, so an SSO redirect on the staging URL is **expected** — harnesses
+   and docs treat it as a pass with a note, not a failure.
+
+### Initial migration, push, deploy
+
+The initial migration is generated **locally against the `dev` branch** and
+committed; staging/production receive it via `.github/workflows/migrate.yml`
+on push — never run `migrate:up` against them manually.
+
+```bash
+# Generate the initial migration against the dev branch (local .env)
+pnpm migrate:create
+pnpm migrate:up          # applies to the dev branch only
+
+# Push and deploy — the push triggers CI + the staging/production migration
 git add .
 git commit -m "feat: init project — {PROJECT_NAME}"
 git push
+
+# Verify CI and the migration workflow are green
+gh run list
+
 vercel deploy --prod
 
 # Validate the deployment — the final provisioning step.
@@ -214,26 +264,6 @@ If the founder wants a custom domain, follow `docs/RUNBOOK_DOMAINS.md` — it
 covers nameserver switch, propagation states that look like errors but aren't,
 forced cert issuance for subdomains, redirect domains, and the Firebase
 Authorized-domains step.
-
-### Staging (Hobby plan default)
-
-Do **not** create a Vercel custom environment for staging on the Hobby plan —
-it fails with `Cannot create more than 0 custom environments`. Custom
-environments are Pro-only; use them only when the team is on Pro.
-
-The default staging recipe:
-
-1. Create a long-lived `staging` git branch and push it:
-   `git branch staging && git push -u origin staging`
-2. Add a `staging.<domain>` domain to the Vercel project pinned to the
-   `staging` branch — this gives branch-scoped Preview deployments a stable
-   URL.
-3. Scope staging env vars to the Preview environment:
-   `vercel env add <NAME> preview`
-
-Preview deployments have Vercel SSO deployment protection enabled by default,
-so an SSO redirect on the staging URL is **expected** — harnesses and docs
-treat it as a pass with a note, not a failure.
 
 ## Phase 8 — Handoff
 

@@ -15,8 +15,10 @@ embedding pipeline (e.g. from add-vector-store).
 ## Operating Modes
 
 ### Mode A — Plan Audit
+
 You are given an implementation plan that touches the AI stack. Review only the
 AI-relevant parts. Your job is to:
+
 1. Flag context assembled wastefully (full history when a window would do,
    preloaded content that could be retrieved just-in-time, low-signal filler)
 2. Flag prompt structures that defeat caching (dynamic content before static,
@@ -29,6 +31,7 @@ AI-relevant parts. Your job is to:
 5. Propose concrete plan edits and name the trade-off each one makes
 
 ### Mode B — Implementation Review
+
 You are given paths to implemented AI-stack files. Read them, score the
 implementation against the checklist below, and propose minimal diffs for
 anything that fails. Do not propose rewrites when a targeted fix works.
@@ -41,6 +44,7 @@ principle: the context window is a finite attention budget — find the smallest
 set of high-signal tokens that maximizes the likelihood of the desired outcome.
 
 ### Token efficiency
+
 - Context is curated, not accumulated: send the smallest high-signal set, not
   everything available. Model quality degrades as context grows (context rot),
   so trimming is a quality lever too, not just a cost lever.
@@ -53,6 +57,7 @@ set of high-signal tokens that maximizes the likelihood of the desired outcome.
 - Output length is constrained where the product doesn't need prose.
 
 ### Quality
+
 - Prompts state clear criteria instead of relying on model exploration; complex
   jobs are decomposed into separate calls or sub-agents with focused context
   (isolate) rather than one overloaded prompt.
@@ -65,6 +70,7 @@ set of high-signal tokens that maximizes the likelihood of the desired outcome.
   spot-checks — not intuition.
 
 ### Latency
+
 - Responses stream to the user; time-to-first-token is treated as the product
   metric, not total generation time.
 - Prompt structure is cache-friendly: stable prefix (system prompt, tool

@@ -50,11 +50,15 @@ function sleep(ms) {
 
 async function startDevServer() {
   console.log(`Dev server not detected at ${BASE_URL}; starting it...`);
-  const child = spawn('pnpm', ['--filter', '@morpheus/web', 'dev', '--port', PORT, '--strictPort'], {
-    cwd: REPO_ROOT,
-    stdio: 'ignore',
-    detached: true,
-  });
+  const child = spawn(
+    'pnpm',
+    ['--filter', '@morpheus/web', 'dev', '--port', PORT, '--strictPort'],
+    {
+      cwd: REPO_ROOT,
+      stdio: 'ignore',
+      detached: true,
+    },
+  );
   child.on('error', () => {
     // Surfaced by the reachability timeout below.
   });
@@ -66,7 +70,9 @@ async function startDevServer() {
   }
 
   stopDevServer(child);
-  console.error(`FAIL: dev server did not become reachable at ${BASE_URL} within ${SERVER_BOOT_TIMEOUT_MS / 1000}s`);
+  console.error(
+    `FAIL: dev server did not become reachable at ${BASE_URL} within ${SERVER_BOOT_TIMEOUT_MS / 1000}s`,
+  );
   console.error('hint: run pnpm dev manually and check for errors');
   process.exit(2);
 }
@@ -143,9 +149,7 @@ async function validateRoute(browser, route) {
     });
   }
 
-  const rootHtml = await page
-    .$eval('#root', (el) => el.innerHTML)
-    .catch(() => null);
+  const rootHtml = await page.$eval('#root', (el) => el.innerHTML).catch(() => null);
   if (rootHtml === null || rootHtml.trim() === '') {
     failures.push({
       problem: '#root is empty (blank page)',
@@ -171,7 +175,9 @@ function printSummary(results) {
     }
   }
   console.log(`\nScreenshots written to ${ARTIFACTS_DIR}`);
-  console.log('Agents: open and visually inspect the screenshots before declaring the app working.');
+  console.log(
+    'Agents: open and visually inspect the screenshots before declaring the app working.',
+  );
 }
 
 async function main() {
@@ -202,6 +208,8 @@ async function main() {
 
 main().catch((err) => {
   console.error(`FAIL: harness error: ${err.message}`);
-  console.error('hint: re-run with the dev server already running (pnpm dev) to isolate the problem');
+  console.error(
+    'hint: re-run with the dev server already running (pnpm dev) to isolate the problem',
+  );
   process.exit(2);
 });

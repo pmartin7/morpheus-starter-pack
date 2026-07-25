@@ -1,0 +1,35 @@
+name: Migrate database
+
+on:
+  push:
+    branches: [staging, main]
+
+# Never run two migrations for the same environment at once; queue instead.
+concurrency:
+  group: migrate-${{ github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    environment: ${{ github.ref_name == 'main' && 'production' || 'staging' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      # MikroORM discovers entities from dist at runtime; go through turbo so
+      # workspace dependencies (@morpheus/shared) are built first
+      - run: pnpm build --filter=@morpheus/api
+
+      - name: Run pending migrations
+        env:
+          NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
+        run: pnpm migrate:up

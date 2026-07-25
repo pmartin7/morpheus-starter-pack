@@ -8,11 +8,7 @@ import type { UpdateUser } from '@morpheus/shared';
 export class UsersService {
   constructor(private readonly em: EntityManager) {}
 
-  async getOrCreate(
-    firebaseUid: string,
-    email: string,
-    displayName: string | null,
-  ): Promise<User> {
+  async getOrCreate(firebaseUid: string, email: string, displayName: string | null): Promise<User> {
     const existing = await this.em.findOne(User, { firebaseUid });
     if (existing) return existing;
 

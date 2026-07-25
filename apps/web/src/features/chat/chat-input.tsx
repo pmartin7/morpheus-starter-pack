@@ -33,12 +33,7 @@ export function ChatInput({ onSubmit, isLoading }: ChatInputProps): JSX.Element 
         rows={1}
         className="flex-1 resize-none rounded-xl border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-50"
       />
-      <Button
-        onClick={handleSubmit}
-        disabled={isLoading}
-        size="sm"
-        aria-label="Send message"
-      >
+      <Button onClick={handleSubmit} disabled={isLoading} size="sm" aria-label="Send message">
         {isLoading ? '…' : 'Send'}
       </Button>
     </div>

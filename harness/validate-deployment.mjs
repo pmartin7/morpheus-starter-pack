@@ -129,7 +129,9 @@ async function smokeCheck(label, url) {
     return { note: `${label} is protected by Vercel SSO (Hobby plan default); not a failure` };
   }
   if (res.status === 401) {
-    return { note: `${label} returned 401 — likely Vercel deployment protection/SSO; not a failure` };
+    return {
+      note: `${label} returned 401 — likely Vercel deployment protection/SSO; not a failure`,
+    };
   }
   if (res.status >= 200 && res.status < 400) {
     console.log(`PASS  ${label} smoke check: ${url} → ${res.status}`);
@@ -149,13 +151,19 @@ async function visualCheckProduction(url) {
   try {
     ({ chromium } = await import('playwright'));
   } catch {
-    exitEnvError('playwright is not installed', 'hint: run pnpm install, then pnpm exec playwright install chromium');
+    exitEnvError(
+      'playwright is not installed',
+      'hint: run pnpm install, then pnpm exec playwright install chromium',
+    );
   }
   let browser;
   try {
     browser = await chromium.launch();
   } catch (err) {
-    exitEnvError(`could not launch chromium: ${err.message}`, 'hint: run pnpm exec playwright install chromium');
+    exitEnvError(
+      `could not launch chromium: ${err.message}`,
+      'hint: run pnpm exec playwright install chromium',
+    );
   }
 
   const page = await browser.newPage();
@@ -184,7 +192,9 @@ function printSummary(failures, notes) {
   }
   if (failures.length === 0) console.log('PASS  all deployment checks passed');
   console.log(`\nScreenshots written to ${ARTIFACTS_DIR}`);
-  console.log('Agents: open and visually inspect the screenshots before declaring the deployment healthy.');
+  console.log(
+    'Agents: open and visually inspect the screenshots before declaring the deployment healthy.',
+  );
 }
 
 async function main() {
@@ -208,10 +218,15 @@ async function main() {
     branch: STAGING_BRANCH,
   });
   if (!staging) {
-    notes.push(`no staging (${STAGING_BRANCH} branch) preview deployment found; skipping — not a failure`);
+    notes.push(
+      `no staging (${STAGING_BRANCH} branch) preview deployment found; skipping — not a failure`,
+    );
   }
 
-  for (const [label, deployment] of [['production', production], ['staging', staging]]) {
+  for (const [label, deployment] of [
+    ['production', production],
+    ['staging', staging],
+  ]) {
     if (!deployment) continue;
     const stateFailure = checkDeploymentState(label, deployment);
     if (stateFailure) {

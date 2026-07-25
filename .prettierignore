@@ -1,0 +1,7 @@
+pnpm-lock.yaml
+dist
+coverage
+.turbo
+.vercel
+harness/artifacts
+apps/api/migrations/.snapshot-*.json

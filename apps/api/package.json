@@ -8,8 +8,14 @@
     "start": "node dist/main.js",
     "lint": "eslint src --ext .ts",
     "type-check": "tsc --noEmit",
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "mikro-orm": "mikro-orm"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^0.0.39",
@@ -31,6 +37,7 @@
     "zod": "^3.23.0"
   },
   "devDependencies": {
+    "@mikro-orm/cli": "^6.3.0",
     "@morpheus/eslint-config": "workspace:*",
     "@morpheus/shared": "workspace:*",
     "@morpheus/tsconfig": "workspace:*",

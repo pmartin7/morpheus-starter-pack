@@ -65,16 +65,16 @@ building on a foundation and building on sand.
 
 **A tech stack optimized for prototyping at speed:**
 
-| Layer | Technology |
-|-------|-----------|
+| Layer    | Technology                                          |
+| -------- | --------------------------------------------------- |
 | Frontend | Vite + React + TypeScript + Tailwind v4 + shadcn/ui |
-| Backend | NestJS + MikroORM + Neon Postgres |
-| Auth | Firebase Auth |
-| AI | Vercel AI SDK (Anthropic Claude or OpenAI) |
-| Testing | Vitest |
-| Logging | Pino (structured JSON) |
-| Deploy | Vercel (automatic on push) |
-| Monorepo | Turborepo + pnpm workspaces |
+| Backend  | NestJS + MikroORM + Neon Postgres                   |
+| Auth     | Firebase Auth                                       |
+| AI       | Vercel AI SDK (Anthropic Claude or OpenAI)          |
+| Testing  | Vitest                                              |
+| Logging  | Pino (structured JSON)                              |
+| Deploy   | Vercel (automatic on push)                          |
+| Monorepo | Turborepo + pnpm workspaces                         |
 
 ---
 
@@ -135,7 +135,7 @@ ceremony. Just describe them in chat and let the agent edit directly.
 
 - **Describe behavior, not implementation.** "Users can update their display
   name" beats "create a PATCH endpoint with a Zod schema." The skills and docs
-  already encode *how* things are built here; your job is to say *what*.
+  already encode _how_ things are built here; your job is to say _what_.
 - **Match the ceremony to the change.** Multi-file features get the full
   research → plan → build → test loop. One-file tweaks go straight to chat.
   When in doubt, start with `/research-feature` — it's cheap and it thinks
@@ -208,30 +208,30 @@ You'll need the following accounts and tools set up before running init.
 
 ### Accounts (all have free tiers)
 
-| Service | What it's for | Sign up |
-|---------|--------------|---------|
-| **GitHub** | Code hosting | [github.com](https://github.com) |
-| **Vercel** | Hosting and deployment | [vercel.com](https://vercel.com) — connect your GitHub account |
-| **Neon** | Postgres database | [neon.tech](https://neon.tech) — create a project, copy the connection string |
-| **Firebase** | Authentication | [console.firebase.google.com](https://console.firebase.google.com) — create a project, enable Email/Password + Google sign-in |
-| **Anthropic** or **OpenAI** | AI model provider | [console.anthropic.com](https://console.anthropic.com) or [platform.openai.com](https://platform.openai.com) — get an API key |
+| Service                     | What it's for          | Sign up                                                                                                                       |
+| --------------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| **GitHub**                  | Code hosting           | [github.com](https://github.com)                                                                                              |
+| **Vercel**                  | Hosting and deployment | [vercel.com](https://vercel.com) — connect your GitHub account                                                                |
+| **Neon**                    | Postgres database      | [neon.tech](https://neon.tech) — create a project, copy the connection string                                                 |
+| **Firebase**                | Authentication         | [console.firebase.google.com](https://console.firebase.google.com) — create a project, enable Email/Password + Google sign-in |
+| **Anthropic** or **OpenAI** | AI model provider      | [console.anthropic.com](https://console.anthropic.com) or [platform.openai.com](https://platform.openai.com) — get an API key |
 
 ### Tools (install on your machine)
 
-| Tool | Install |
-|------|---------|
-| **Node.js** (v20+) | [nodejs.org](https://nodejs.org) or `brew install node` |
-| **pnpm** | `npm install -g pnpm` |
-| **Git** | Comes with macOS; Windows: [git-scm.com](https://git-scm.com) |
-| **GitHub CLI** | `brew install gh` then `gh auth login` |
-| **Vercel CLI** | `npm install -g vercel` then `vercel login` |
+| Tool               | Install                                                       |
+| ------------------ | ------------------------------------------------------------- |
+| **Node.js** (v20+) | [nodejs.org](https://nodejs.org) or `brew install node`       |
+| **pnpm**           | `npm install -g pnpm`                                         |
+| **Git**            | Comes with macOS; Windows: [git-scm.com](https://git-scm.com) |
+| **GitHub CLI**     | `brew install gh` then `gh auth login`                        |
+| **Vercel CLI**     | `npm install -g vercel` then `vercel login`                   |
 
 ### AI coding environment (pick one)
 
-| Tool | Best for | Cost |
-|------|----------|------|
+| Tool       | Best for                                                                                          | Cost                            |
+| ---------- | ------------------------------------------------------------------------------------------------- | ------------------------------- |
 | **Cursor** | Interactive development — you watch the agent work, approve changes, steer direction in real time | Free tier available; Pro $20/mo |
-| **Codex** | Autonomous tasks — you describe what you want, walk away, come back to a pull request | Requires OpenAI API credits |
+| **Codex**  | Autonomous tasks — you describe what you want, walk away, come back to a pull request             | Requires OpenAI API credits     |
 
 ---
 
@@ -423,6 +423,7 @@ it at your repository.
 > conventions in AGENTS.md and docs/STYLE_GUIDE.md. Run pnpm check when done.
 
 Codex will:
+
 1. Read `AGENTS.md` to understand the project
 2. Read the relevant docs (style guide, architecture)
 3. Implement the feature following established patterns
@@ -451,15 +452,15 @@ your project's architecture, conventions, and constraints automatically.
 
 The `init-project` skill (Cursor) or manual setup (Codex) configures these pieces:
 
-| Step | What | Why |
-|------|------|-----|
-| Product questions | Captures your product's purpose, users, and needs | Agents need context to make good decisions |
-| `AGENTS.md` generation | Creates the master agent instruction file | Every agent reads this first |
-| `ARCHITECTURE.md` generation | Documents routes, entities, data flows | Agents need to know where things live |
-| `pnpm install` | Installs all dependencies | Required to build and run |
-| Database migration | Creates User, Conversation, Message tables | The app needs a schema to function |
-| Vercel linking + env vars | Connects your repo to Vercel hosting | Enables auto-deploy on push |
-| First deploy | Ships your app to a live URL | You're live from minute one |
+| Step                         | What                                              | Why                                        |
+| ---------------------------- | ------------------------------------------------- | ------------------------------------------ |
+| Product questions            | Captures your product's purpose, users, and needs | Agents need context to make good decisions |
+| `AGENTS.md` generation       | Creates the master agent instruction file         | Every agent reads this first               |
+| `ARCHITECTURE.md` generation | Documents routes, entities, data flows            | Agents need to know where things live      |
+| `pnpm install`               | Installs all dependencies                         | Required to build and run                  |
+| Database migration           | Creates User, Conversation, Message tables        | The app needs a schema to function         |
+| Vercel linking + env vars    | Connects your repo to Vercel hosting              | Enables auto-deploy on push                |
+| First deploy                 | Ships your app to a live URL                      | You're live from minute one                |
 
 ---
 
@@ -507,29 +508,29 @@ purpose in your task description.
 
 ### Core workflow
 
-| Command | What it does |
-|---------|-------------|
-| `/init-project` | One-time setup wizard — configures your app and deploys it |
+| Command             | What it does                                                                                     |
+| ------------------- | ------------------------------------------------------------------------------------------------ |
+| `/init-project`     | One-time setup wizard — configures your app and deploys it                                       |
 | `/research-feature` | Researches a feature idea — explores the codebase, proposes 2-3 options, gets staff-level review |
-| `/plan-feature` | Creates a detailed implementation plan from research |
-| `/build-plan` | Implements a plan — builds in dependency order, validates with `pnpm check` |
-| `/fix-bug` | Diagnoses a bug — forms hypotheses, tests them against code, recommends a fix |
-| `/generate-test` | Writes tests for existing code — runs independently from the implementer |
-| `/design` | Reviews or proposes UI design — takes browser screenshots, checks against design system |
+| `/plan-feature`     | Creates a detailed implementation plan from research                                             |
+| `/build-plan`       | Implements a plan — builds in dependency order, validates with `pnpm check`                      |
+| `/fix-bug`          | Diagnoses a bug — forms hypotheses, tests them against code, recommends a fix                    |
+| `/generate-test`    | Writes tests for existing code — runs independently from the implementer                         |
+| `/design`           | Reviews or proposes UI design — takes browser screenshots, checks against design system          |
 
 ### Utilities
 
-| Command | What it does |
-|---------|-------------|
-| `/add-logs` | Adds structured logging at specific locations following logging conventions |
-| `/create-pr` | Generates a PR description from your git diff and conversation history |
+| Command      | What it does                                                                |
+| ------------ | --------------------------------------------------------------------------- |
+| `/add-logs`  | Adds structured logging at specific locations following logging conventions |
+| `/create-pr` | Generates a PR description from your git diff and conversation history      |
 
 ### Add-ons (optional integrations)
 
-| Command | What it does |
-|---------|-------------|
+| Command             | What it does                                                                     |
+| ------------------- | -------------------------------------------------------------------------------- |
 | `/add-vector-store` | Wires up Turbopuffer for vector search (e.g., semantic search over chat history) |
-| `/add-blob-storage` | Wires up Vercel Blob for file uploads (e.g., PDF upload and processing) |
+| `/add-blob-storage` | Wires up Vercel Blob for file uploads (e.g., PDF upload and processing)          |
 
 ---
 
@@ -642,6 +643,7 @@ it. That said, you'll benefit from understanding basic concepts like "database,"
 **Q: How much does this cost to run?**
 
 All services have free tiers that are generous enough for prototyping:
+
 - **Vercel**: free tier includes automatic deploys
 - **Neon Postgres**: free tier includes 0.5 GB storage, scales to zero
 - **Firebase Auth**: free for up to 50k monthly active users
@@ -713,4 +715,4 @@ principles and years of running autonomous coding workflows.
 
 ---
 
-*Fork it. Init it. Ship it.*
+_Fork it. Init it. Ship it._

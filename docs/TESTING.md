@@ -6,13 +6,14 @@ Testing conventions for this repository.
 
 Vitest for all apps and packages. One test runner, one config pattern.
 
-| App | Plugin | Environment |
-|-----|--------|------------|
-| apps/api | unplugin-swc (decorator support) | node |
-| apps/web | — | jsdom |
-| packages/shared | — | node |
+| App             | Plugin                           | Environment |
+| --------------- | -------------------------------- | ----------- |
+| apps/api        | unplugin-swc (decorator support) | node        |
+| apps/web        | —                                | jsdom       |
+| packages/shared | —                                | node        |
 
 Commands:
+
 - `pnpm test` — all tests
 - `pnpm test --filter=@morpheus/api` — API tests only
 - `pnpm validate` — lint + type-check + tests
@@ -20,6 +21,7 @@ Commands:
 ## 2) Philosophy
 
 Test behavior, not implementation. Priorities:
+
 1. Zod schema validation boundaries
 2. Auth guard logic (token verification, user sync)
 3. Service business logic (CRUD, ownership checks)
@@ -31,6 +33,7 @@ Do not over-test: NestJS decorator wiring, static markup, Tailwind classes.
 ## 3) Separate-Agent Workflow
 
 Two-pass approach:
+
 - Pass A: implement the feature
 - Pass B: a separate agent writes tests via `generate-test` skill
 
@@ -50,6 +53,7 @@ AAA pattern: Arrange, Act, Assert. One assert cluster per `it` block.
 ## 6) Mocks
 
 Mock at boundaries only:
+
 - Firebase Admin SDK (`verifyIdToken`)
 - Vercel AI SDK (`streamText`)
 - MikroORM EntityManager (`find`, `create`, `flush`)

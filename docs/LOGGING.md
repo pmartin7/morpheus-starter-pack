@@ -4,10 +4,10 @@ Logging rules for this repository.
 
 ## 1) Logger Strategy
 
-| App | Library | Package |
-|-----|---------|---------|
+| App      | Library                       | Package                    |
+| -------- | ----------------------------- | -------------------------- |
 | apps/api | nestjs-pino (wraps pino-http) | `nestjs-pino`, `pino-http` |
-| apps/web | pino/browser | `pino` |
+| apps/web | pino/browser                  | `pino`                     |
 
 Development: pretty-print via `pino-pretty`.
 Production: JSON to stdout (Vercel captures, optional Axiom drain).
@@ -24,6 +24,7 @@ Production: JSON to stdout (Vercel captures, optional Axiom drain).
 ## 3) What Not to Log
 
 Never:
+
 - secrets, tokens, API keys
 - full message content or chat history
 - full request/response payloads
@@ -33,11 +34,11 @@ Log IDs, counts, slugs — not full content.
 
 ## 4) Log Levels
 
-| Level | Use |
-|-------|-----|
-| debug | local troubleshooting |
-| info | successful major operation |
-| warn | degraded but recoverable |
+| Level | Use                                   |
+| ----- | ------------------------------------- |
+| debug | local troubleshooting                 |
+| info  | successful major operation            |
+| warn  | degraded but recoverable              |
 | error | failed operation or broken assumption |
 
 ## 5) Required Context Fields
@@ -52,6 +53,7 @@ Redact `request.headers.authorization` in nestjs-pino config.
 ## 7) Observability (optional)
 
 Axiom free tier: 500GB/mo, 30-day retention. Setup:
+
 1. Create Axiom account → dataset
 2. Vercel dashboard → Log Drains → add Axiom (requires Pro plan)
 3. Or: use `pino-axiom` transport in nestjs-pino config with AXIOM_TOKEN env var

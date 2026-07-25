@@ -21,6 +21,8 @@ packages/shared        Zod schemas + inferred TypeScript types
 packages/tsconfig      Shared TypeScript base configs
 packages/eslint-config Shared ESLint flat configs
 docs/                  Style guide, testing, logging, UI design
+.github/workflows/     CI (format+lint+type-check+test) + DB migration pipelines
+.husky/                Pre-commit hook (lint-staged: eslint --fix + prettier)
 .agents/skills/        Agent skills (workflows) — source of truth
 .agents/rules/         Always-on agent rules — source of truth
 .agents/agents/        Agent role definitions
@@ -37,6 +39,7 @@ pnpm build
 pnpm check        # lint + type-check
 pnpm validate     # check + tests
 pnpm test
+pnpm format       # prettier --write (also runs on save + pre-commit + CI check)
 pnpm validate:local   # browser harness: routes render, no console errors
 pnpm validate:deploy  # Vercel harness: latest deployments healthy
 pnpm design:shots -- --label <label>  # screenshots of every route at 1280px + 375px
@@ -96,24 +99,25 @@ pnpm design:shots -- --label <label>  # screenshots of every route at 1280px + 3
 
 ## 9) Available Skills
 
-| Skill | Trigger | Purpose |
-|-------|---------|---------|
-| init-project | /init-project | Conversational setup wizard |
-| research-feature | /research-feature | Research + simplify + options + staff review |
-| plan-feature | /plan-feature | Create implementation plan from research |
-| build-plan | /build-plan | Implement plan with parallel subagents |
-| fix-bug | /fix-bug | Diagnose bugs via hypotheses + ninja review |
-| generate-test | /generate-test | Independent P0 test writing |
-| design | /design | UI design / review + staff-designer |
-| add-logs | /add-logs | Insert structured logging |
-| create-pr-description | /create-pr | PR description from git diff |
-| add-vector-store | /add-vector-store | Wire Turbopuffer vector search |
-| add-blob-storage | /add-blob-storage | Wire Vercel Blob file storage |
-| validate-app | /validate-app | Run local/deployment validation harnesses |
+| Skill                 | Trigger           | Purpose                                      |
+| --------------------- | ----------------- | -------------------------------------------- |
+| init-project          | /init-project     | Conversational setup wizard                  |
+| research-feature      | /research-feature | Research + simplify + options + staff review |
+| plan-feature          | /plan-feature     | Create implementation plan from research     |
+| build-plan            | /build-plan       | Implement plan with parallel subagents       |
+| fix-bug               | /fix-bug          | Diagnose bugs via hypotheses + ninja review  |
+| generate-test         | /generate-test    | Independent P0 test writing                  |
+| design                | /design           | UI design / review + staff-designer          |
+| add-logs              | /add-logs         | Insert structured logging                    |
+| create-pr-description | /create-pr        | PR description from git diff                 |
+| add-vector-store      | /add-vector-store | Wire Turbopuffer vector search               |
+| add-blob-storage      | /add-blob-storage | Wire Vercel Blob file storage                |
+| validate-app          | /validate-app     | Run local/deployment validation harnesses    |
 
 ## 10) Anti-Patterns
 
 Do not:
+
 - introduce a second UI system or component library
 - change design tokens in `apps/web/src/styles/globals.css` without updating
   the token table in `docs/UI_DESIGN.md`, or vice versa — they are one system

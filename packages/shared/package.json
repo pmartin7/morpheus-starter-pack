@@ -13,11 +13,20 @@
   },
   "scripts": {
     "build": "tsc",
+    "lint": "eslint src",
     "type-check": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run --passWithNoTests"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   },
   "devDependencies": {
+    "@morpheus/eslint-config": "workspace:*",
     "@morpheus/tsconfig": "workspace:*",
+    "eslint": "^9.0.0",
     "typescript": "^5.4.0",
     "vitest": "^1.6.0"
   },

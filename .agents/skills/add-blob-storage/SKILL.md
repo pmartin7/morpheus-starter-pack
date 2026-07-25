@@ -15,11 +15,13 @@ pnpm --filter=@morpheus/api add @vercel/blob
 `BLOB_READ_WRITE_TOKEN` is already in the env schema (optional). Make it required:
 
 Update `packages/shared/src/schemas/env.ts`:
+
 ```typescript
 BLOB_READ_WRITE_TOKEN: z.string().min(1),
 ```
 
 Add to `.env.example`:
+
 ```
 BLOB_READ_WRITE_TOKEN=vercel_blob_rw_...
 ```
@@ -27,6 +29,7 @@ BLOB_READ_WRITE_TOKEN=vercel_blob_rw_...
 ## Step 3 — Create File Entity
 
 Create `apps/api/src/upload/entities/file.entity.ts`:
+
 - Extends BaseEntity
 - `url` (string) — Vercel Blob URL
 - `filename` (string)
@@ -37,6 +40,7 @@ Create `apps/api/src/upload/entities/file.entity.ts`:
 ## Step 4 — Create UploadService
 
 Create `apps/api/src/upload/upload.service.ts`:
+
 - `upload(user, file: Express.Multer.File)`: put to Vercel Blob, persist File entity, return URL
 - `getFiles(user)`: list user's uploaded files
 
@@ -47,5 +51,6 @@ Create `apps/api/src/upload/upload.module.ts` with controller `POST /api/upload`
 ## Step 6 — Update Docs
 
 Update `ARCHITECTURE.md`:
+
 - Add File entity to entity model
 - Add upload flow to data flow section

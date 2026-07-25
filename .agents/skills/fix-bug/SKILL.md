@@ -7,6 +7,7 @@ Read AGENTS.md before starting.
 ## Phase 1 — Understand
 
 Ask the user:
+
 1. What is the bug? (observed behaviour vs expected behaviour)
 2. Steps to reproduce
 3. When did it start? (after what change, if known)
@@ -22,6 +23,7 @@ If the bug cannot be reproduced, ask for more context before proceeding.
 ## Phase 3 — Explore Code Paths
 
 Read the files involved in the failing path:
+
 - The relevant controller/route
 - The relevant service
 - Any guards or pipes in the path
@@ -32,6 +34,7 @@ Goal: understand what the code actually does vs what it should do.
 ## Phase 4 — Generate Hypotheses
 
 Write 2–4 hypotheses about the root cause. For each:
+
 - One sentence: "The bug is caused by X"
 - Evidence for: what in the code supports this hypothesis
 - Evidence against: what in the code contradicts this hypothesis
@@ -39,6 +42,7 @@ Write 2–4 hypotheses about the root cause. For each:
 ## Phase 5 — Bug Fixer Ninja Review
 
 Delegate to bug-fixer-ninja agent:
+
 - Provide bug description + reproduction steps
 - Provide hypotheses with evidence
 - Provide file paths and relevant code excerpts

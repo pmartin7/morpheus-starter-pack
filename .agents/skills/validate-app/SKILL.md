@@ -5,9 +5,9 @@ in deployment. Use these instead of eyeballing terminal output.
 
 ## When to run which
 
-| Harness | Command | Run when |
-|---------|---------|----------|
-| Local | `pnpm validate:local` | After local changes to web code, before finishing any task that touches the app |
+| Harness    | Command                | Run when                                                                         |
+| ---------- | ---------------------- | -------------------------------------------------------------------------------- |
+| Local      | `pnpm validate:local`  | After local changes to web code, before finishing any task that touches the app  |
 | Deployment | `pnpm validate:deploy` | After a deployment (production or staging), or when asked to verify the live app |
 
 ## What each harness does

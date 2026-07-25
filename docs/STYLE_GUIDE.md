@@ -26,14 +26,14 @@ Named exports only. No default exports.
 
 ## 4) Naming
 
-| Kind | Convention | Example |
-|------|-----------|---------|
-| files | kebab-case | `user.service.ts` |
-| components | PascalCase | `ChatInput` |
-| hooks | `use-*` | `use-auth.ts` |
-| schemas | `*Schema` | `CreateUserSchema` |
-| constants | SCREAMING_SNAKE_CASE | `MAX_RETRY_COUNT` |
-| variables/functions | camelCase | `getOrCreate` |
+| Kind                | Convention           | Example            |
+| ------------------- | -------------------- | ------------------ |
+| files               | kebab-case           | `user.service.ts`  |
+| components          | PascalCase           | `ChatInput`        |
+| hooks               | `use-*`              | `use-auth.ts`      |
+| schemas             | `*Schema`            | `CreateUserSchema` |
+| constants           | SCREAMING_SNAKE_CASE | `MAX_RETRY_COUNT`  |
+| variables/functions | camelCase            | `getOrCreate`      |
 
 ## 5) Imports
 
@@ -70,6 +70,22 @@ No class-validator, no class-transformer.
 ## 9) Monorepo Rules
 
 - `packages/shared` is the only cross-app runtime package
+- `packages/shared` must stay runtime-agnostic: it runs in both browser and
+  Node, so no Node-only APIs (`Buffer`, `crypto`, `fs`, …)
 - packages must build (tsc) before consuming apps
 - never import from `apps/api` in `apps/web` or vice versa
 - shared types live in `@morpheus/shared`, not duplicated per app
+
+## 10) Formatting
+
+Prettier (`.prettierrc`) is enforced mechanically — never hand-format or debate
+style:
+
+- editor: format-on-save via committed `.vscode/settings.json`
+- pre-commit: husky + lint-staged run `eslint --fix` + `prettier --write` on
+  staged files
+- CI: `pnpm format:check` fails the build on unformatted files
+- manual fix-up: `pnpm format`
+
+ESLint owns correctness rules only; `eslint-config-prettier` disables anything
+stylistic that would conflict with Prettier.

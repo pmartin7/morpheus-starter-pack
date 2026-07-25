@@ -9,11 +9,11 @@ it describes your specific product's topology.
 
 ### Route Map
 
-| Route | Page | Auth |
-|-------|------|------|
-| / | Landing page | No |
-| /login | Firebase auth | No |
-| /chat | AI chat interface | Yes |
+| Route  | Page              | Auth |
+| ------ | ----------------- | ---- |
+| /      | Landing page      | No   |
+| /login | Firebase auth     | No   |
+| /chat  | AI chat interface | Yes  |
 
 ### Entity Model
 
@@ -32,13 +32,27 @@ Chat: Browser → useChat → POST /api/chat/send → AI SDK streamText → SSE 
 CRUD: Browser → fetch → /api/{resource} → Guard → Service → MikroORM → Neon Postgres
 ```
 
-### Deployment
+### Deployment & Environments
 
-```
-GitHub → push to main → Vercel auto-deploy
-Web: Vite SPA (static)
-API: NestJS single serverless function
-```
+One Neon Postgres project with three database branches mirroring the git flow:
+
+| Git branch | Vercel environment | Neon branch  | GitHub environment |
+| ---------- | ------------------ | ------------ | ------------------ |
+| `main`     | Production         | `production` | `production`       |
+| `staging`  | Preview (staging)  | `staging`    | `staging`          |
+| local dev  | —                  | `dev`        | —                  |
+
+- Local dev: `.env` `NEON_DATABASE_URL` → Neon `dev` branch (direct URL).
+- Vercel runtime uses pooled (`-pooler`) connection strings; migrations use
+  direct URLs.
+- `.github/workflows/ci.yml` — format + lint + type-check + tests on push/PR
+  to `staging`/`main`.
+- `.github/workflows/migrate.yml` — applies MikroORM migrations using the
+  matching GitHub environment's `NEON_DATABASE_URL` secret.
+- Flow: local (`dev` branch) → merge to `staging` → merge to `main`.
+- Web: Vite SPA (static); API: NestJS single serverless function.
+- If the product uses OAuth: random Vercel preview URLs can never be OAuth
+  origins — test OAuth flows on the stable staging domain.
 
 ### Key Invariants
 

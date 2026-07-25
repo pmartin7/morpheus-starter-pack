@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /*
  * Design tokens — the single place to restyle the entire app.
@@ -6,17 +6,17 @@
  * any change here MUST be mirrored there, and vice versa.
  */
 @theme {
-  --color-primary: #3B82F6;
-  --color-primary-hover: #2563EB;
-  --color-primary-foreground: #FFFFFF;
-  --color-surface: #FAFAFA;
-  --color-surface-alt: #F1F5F9;
-  --color-card: #FFFFFF;
-  --color-ink: #1A1B1E;
-  --color-ink-muted: #64748B;
-  --color-border: #E5E7EB;
-  --color-border-strong: #D1D5DB;
-  --color-destructive: #EF4444;
+  --color-primary: #3b82f6;
+  --color-primary-hover: #2563eb;
+  --color-primary-foreground: #ffffff;
+  --color-surface: #fafafa;
+  --color-surface-alt: #f1f5f9;
+  --color-card: #ffffff;
+  --color-ink: #1a1b1e;
+  --color-ink-muted: #64748b;
+  --color-border: #e5e7eb;
+  --color-border-strong: #d1d5db;
+  --color-destructive: #ef4444;
 
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-display: 'Inter', ui-sans-serif, system-ui, sans-serif;

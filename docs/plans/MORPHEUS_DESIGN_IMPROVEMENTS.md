@@ -16,7 +16,7 @@ ships a distinctive UI on day one.
 Each cause below maps to a numbered fix in the next section.
 
 1. **Design is a docs-only, optional phase.** `init-project` Phase 4
-   ("Customize UI_DESIGN.md") is literally marked *(optional)*, collects only
+   ("Customize UI*DESIGN.md") is literally marked *(optional)\_, collects only
    a hex color + two adjectives + font preferences, and its sole action is
    replacing `{PLACEHOLDER}` tokens in `docs/UI_DESIGN.md`. **No code is
    modified.** In the observed run this produced an immediate docs/code
@@ -44,7 +44,7 @@ Each cause below maps to a numbered fix in the next section.
    "quirky, geeky, samurai spirit," but no step translates adjectives into
    palette/typography/layout decisions. Two adjectives and one hex value is
    far too little input to derive an identity from — and nothing prompts
-   research into what the adjectives should *mean* visually. → Fix 2
+   research into what the adjectives should _mean_ visually. → Fix 2
 7. **The template's defaults are the strongest force in the room.** Centered
    hero, blue CTA, white nav: when no step forces a decision, defaults ship.
    There is no explicit rule that shipping the stock look unmodified is a
@@ -76,7 +76,7 @@ customization" to a required phase with this structure:
    likes, and explicitly what to avoid.
 2. **Research:** one or two web searches — current design trends for the
    product's category, plus any brand-authentic visual vocabulary implied by
-   the adjectives (e.g. "samurai/zen" → traditional Japanese palette and *ma*,
+   the adjectives (e.g. "samurai/zen" → traditional Japanese palette and _ma_,
    not cherry-blossom kitsch). Note both what to adopt and which trend-traps
    to avoid (the generic dark-mode+neon look, glassmorphism, etc.).
 3. **Propose:** 2–3 named design directions (palette + type pairing + layout
@@ -90,10 +90,10 @@ customization" to a required phase with this structure:
    the `/design` skill's phases rather than duplicating them — Phase 4 should
    essentially be "run a condensed /design pass."
 
-Add an explicit anti-default rule to the skill: *"Shipping the template's
+Add an explicit anti-default rule to the skill: _"Shipping the template's
 stock palette, fonts, and centered-hero layout unmodified is a failed init,
 regardless of how little brand context was given. Derive something specific
-or ask."*
+or ask."_
 
 **Acceptance:** a test init run with brand adjectives produces a UI whose
 tokens, fonts, and landing layout all differ from the template defaults, with
@@ -121,6 +121,7 @@ restyles nav, pages, buttons, inputs, and cards with no other edits.
 
 ```markdown
 ## 10) Distinctiveness & Brand Expression
+
 Does the design express this product's brand, or could any product ship it?
 Stock template palette/type/layout unmodified scores 1. At least one
 memorable, brand-specific element (mark, type voice, color story, layout
