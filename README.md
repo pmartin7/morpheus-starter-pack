@@ -15,6 +15,7 @@ Fork it. Run one command. Answer a few questions. You're live.
 
 - [Why Morpheus Exists](#why-morpheus-exists)
 - [What You Get](#what-you-get)
+- [How to Use Morpheus](#how-to-use-morpheus)
 - [The Thesis](#the-thesis)
 - [Prerequisites](#prerequisites)
 - [Getting Started with Cursor](#getting-started-with-cursor)
@@ -55,7 +56,7 @@ building on a foundation and building on sand.
 **An agent operating system** with:
 
 - 11 agent skills (research, plan, build, test, design, debug, and more)
-- 3 specialist agent roles (staff engineer, bug fixer, designer)
+- 4 specialist agent roles (staff engineer, AI engineer, bug fixer, designer)
 - Documentation that agents can read and follow (architecture, style guide, testing
   conventions, logging rules, UI design system)
 - Mechanical validation (`pnpm check` / `pnpm validate`) that catches mistakes
@@ -74,6 +75,89 @@ building on a foundation and building on sand.
 | Logging | Pino (structured JSON) |
 | Deploy | Vercel (automatic on push) |
 | Monorepo | Turborepo + pnpm workspaces |
+
+---
+
+## How to Use Morpheus
+
+You don't write most of the code here — you direct an AI agent that does. This
+section gives you the mental model and the habits that make that work well.
+
+### The mental model
+
+Four pieces work together:
+
+1. **Skills** are playbooks. Each one is a step-by-step workflow the agent
+   follows for a specific job: researching a feature, planning it, building it,
+   writing tests, fixing a bug, reviewing a design. You invoke a skill by typing
+   its command in chat (e.g. `/research-feature`), and the agent runs the
+   playbook instead of improvising.
+2. **Agents** are specialists. Four expert roles live in `.agents/agents/`, and
+   skills call on them automatically at review checkpoints — you never invoke
+   them directly:
+   - **Staff Engineer** — an opinionated technical reviewer. When you research a
+     feature, it scores the options and picks a winner; when you plan one, it
+     audits the plan for unneeded complexity and design bugs before you build.
+   - **AI Engineer** — an AI-stack auditor. When a plan or build touches
+     prompts, model calls, or retrieval, it reviews for token efficiency,
+     output quality, and latency — and makes the judgement call when those
+     three conflict.
+   - **Bug Fixer Ninja** — a surgical diagnostician. The `/fix-bug` skill hands
+     it your symptoms and a set of hypotheses; it reads the code, confirms or
+     refutes each one with evidence, and proposes the minimal fix.
+   - **Staff Designer** — a senior product designer. The `/design` skill sends
+     it screenshots of your pages (desktop and mobile); it reviews them against
+     the design system and returns concrete, actionable fixes.
+3. **Docs** are the agent's memory. `AGENTS.md`, `ARCHITECTURE.md`, and `docs/`
+   hold every convention and decision. Agents read them before acting — which is
+   why keeping them accurate matters more than in a human-only codebase.
+4. **Validation** is the safety net. `pnpm check` (lint + types) and
+   `pnpm validate` (+ tests) run after every change, so mistakes are caught in
+   seconds rather than discovered in production.
+
+### The core loop
+
+For any feature of real size, chain the four core skills:
+
+```
+/research-feature → /plan-feature → /build-plan → /generate-test
+```
+
+Research explores your codebase and proposes 2-3 approaches (with a Staff
+Engineer verdict). Plan turns the winner into a file-by-file implementation
+plan (audited again). Build implements it. Test writes tests in an independent
+pass, so the tests check behavior rather than mirroring the implementation.
+
+Small tweaks — copy changes, a new button, a config flag — don't need the
+ceremony. Just describe them in chat and let the agent edit directly.
+
+### Best practices
+
+- **Describe behavior, not implementation.** "Users can update their display
+  name" beats "create a PATCH endpoint with a Zod schema." The skills and docs
+  already encode *how* things are built here; your job is to say *what*.
+- **Match the ceremony to the change.** Multi-file features get the full
+  research → plan → build → test loop. One-file tweaks go straight to chat.
+  When in doubt, start with `/research-feature` — it's cheap and it thinks
+  before you commit.
+- **One task per conversation.** Agents do their best work with a focused
+  context. Finish (or abandon) one feature before starting the next, and start
+  a fresh chat for unrelated work.
+- **Report bugs as symptoms, not diagnoses.** Give `/fix-bug` what you saw,
+  what you expected, and how to reproduce it. Let the Bug Fixer Ninja find the
+  cause — pre-diagnosing sends it down your rabbit hole instead of the right one.
+- **Run `/design` whenever the UI changes.** It screenshots every route at
+  desktop and mobile widths and has the Staff Designer review them — catching
+  the visual regressions that lint and types never will.
+- **Never skip validation.** If the agent didn't run `pnpm check`, ask for it.
+  A green check after every change is what keeps an AI-built codebase from
+  quietly rotting.
+- **Keep the docs truthful.** When your product or conventions change, update
+  `AGENTS.md` and `ARCHITECTURE.md` (or ask the agent to). Stale docs are worse
+  than none — every future agent inherits the error.
+
+The full command list, including utilities and optional add-ons, is in
+[Available Skills](#available-skills-agent-commands).
 
 ---
 

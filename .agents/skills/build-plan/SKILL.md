@@ -36,6 +36,18 @@ pnpm check
 
 If errors: fix and rerun once. If errors remain after one fix pass, report them and stop.
 
+## Phase 3b — AI Engineer Review (conditional)
+
+Only when the implementation changed AI-stack files (prompts, message-history
+assembly, model selection, `apps/api/src/ai/`, retrieval/embeddings), delegate
+to the ai-engineer agent (Mode B):
+- Provide the paths of the changed AI-stack files
+- The agent scores them against its best-practices checklist (token
+  efficiency, quality, latency) and returns minimal diffs for failures
+
+Apply the diffs you agree with, rerun `pnpm check`, and note any recommendation
+you rejected and why. Skip this phase entirely when no AI-stack files changed.
+
 ## Phase 4 — Runtime Verify
 
 Start dev server:

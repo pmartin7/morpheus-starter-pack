@@ -1,6 +1,6 @@
 # plan-feature
 
-Drafts a file-by-file implementation plan for a feature, then delegates to staff-engineer for audit.
+Drafts a file-by-file implementation plan for a feature, then delegates to staff-engineer for audit (plus ai-engineer when the plan touches the AI stack).
 
 Requires research output (options + recommendation) from research-feature. Read AGENTS.md before starting.
 
@@ -32,6 +32,18 @@ Delegate to staff-engineer agent (Mode B):
 - Provide AGENTS.md Golden Principles as context
 
 Apply the staff-engineer's edits to the plan.
+
+## Phase 2b — AI Engineer Audit (conditional)
+
+Only when the plan touches the AI stack (prompts, message-history assembly,
+model selection, `apps/api/src/ai/`, retrieval/embeddings), delegate to the
+ai-engineer agent (Mode A):
+- Provide the AI-relevant sections of the plan
+- The agent audits for token efficiency, output quality, and latency, and
+  names the trade-offs
+
+Apply the ai-engineer's edits to the plan. Skip this phase entirely for plans
+that don't touch the AI stack.
 
 ## Phase 3 — Present
 
