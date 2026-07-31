@@ -21,7 +21,8 @@ apps/api               NestJS + MikroORM + Neon Postgres + Vercel AI SDK (Anthro
 packages/shared        Zod schemas + inferred TypeScript types
 packages/tsconfig      Shared TypeScript base configs
 packages/eslint-config Shared ESLint flat configs
-docs/                  Style guide, testing, logging, UI design
+docs/                  Style guide, auth, testing, logging, UI design
+harness/               Validation harnesses (browser, deployment, docs sync)
 .github/workflows/     CI (format+lint+type-check+test) + DB migration pipelines
 .husky/                Pre-commit hook (lint-staged: eslint --fix + prettier)
 .agents/skills/        Agent skills (workflows) — source of truth
@@ -39,14 +40,20 @@ Cross-cutting stack: Firebase Auth, Vitest, Pino structured logging.
 pnpm install
 pnpm dev          # starts web (:5173) + api (:3000)
 pnpm build
-pnpm check        # lint + type-check
+pnpm check        # lint + type-check + docs:check
 pnpm validate     # check + tests
 pnpm test
 pnpm format       # prettier --write (also runs on save + pre-commit + CI check)
+pnpm docs:check       # docs harness: routes, entities, env vars match the code
 pnpm validate:local   # browser harness: routes render, no console errors
+pnpm validate:auth    # browser harness: sign-up → verify → authenticated API call
 pnpm validate:deploy  # Vercel harness: latest deployments healthy
 pnpm design:shots -- --label <label>  # screenshots of every route at 1280px + 375px
+pnpm playwright:install               # one-time Chromium install for the harnesses
 ```
+
+The browser harnesses need full permissions: Chromium segfaults inside the agent
+sandbox. See `.agents/skills/validate-app/SKILL.md`.
 
 ## Operating Principles
 
@@ -65,6 +72,14 @@ pnpm design:shots -- --label <label>  # screenshots of every route at 1280px + 3
    utilities. Feature-based folders keep component + hooks + sub-components
    together. Never define React components inside other components.
 9. DRY without over-engineering: eliminate real duplication, not hypothetical.
+10. **Harness before infra.** Before adding a new piece of the stack (mobile app,
+    queue, cache, search, ingestion), evaluate the options, then build the harness
+    that proves it works and the doc that explains it — then build the thing. An
+    agent cannot iterate on what it cannot observe, and a subsystem with no
+    harness is one every future agent will guess about. Use `/add-infra`.
+11. **Docs are part of the change.** Routes, entities, env vars, flows, and
+    invariants are updated in the same pass, verified by `pnpm docs:check`. Stale
+    docs are worse than none — every future agent inherits the error.
 
 ## Anti-Patterns
 
@@ -80,15 +95,21 @@ Do not:
 - log secrets or full payloads
 - skip pnpm check after edits
 - create docs that duplicate information already in another doc
+- add a new piece of the stack before its harness and its doc exist
+- ship a route, entity, env var, or flow change without updating `ARCHITECTURE.md`
+- leave a hard-won invariant recorded only in a chat, a commit message, or a
+  `docs/plans/` file
+- reinstall Chromium when a harness fails — read its remediation line first
 
 ## Where to Look
 
 1. AGENTS.md (this file)
 2. ARCHITECTURE.md — routes, entities, data flows
 3. docs/STYLE_GUIDE.md — code conventions
-4. docs/TESTING.md (when writing tests)
-5. docs/LOGGING.md (when adding logs)
-6. docs/UI_DESIGN.md (when touching UI)
+4. docs/AUTH.md (when touching auth, sign-up, or the API guard)
+5. docs/TESTING.md (when writing tests)
+6. docs/LOGGING.md (when adding logs)
+7. docs/UI_DESIGN.md (when touching UI)
 
 Read only what the task needs. README.md carries the human-facing rationale and
 the industry references this framework is grounded in.
@@ -101,21 +122,23 @@ the industry references this framework is grounded in.
 4. Run pnpm check (default sandbox first; full permissions only on EPERM)
 5. If implementation is done, run a separate test-writing pass
 6. Run pnpm validate when tests are in scope
-7. If conventions changed, update docs
+7. Update the docs your change made stale, in this same pass, and record any
+   invariant you discovered (see `.agents/rules/documentation-currency.mdc`)
 
 ## Available Skills
 
-| Skill                 | Trigger           | Purpose                                          |
-| --------------------- | ----------------- | ------------------------------------------------ |
-| init-project          | /init-project     | Conversational setup wizard                      |
-| scope-feature         | /scope-feature    | Simplify spec + options + staff review           |
-| plan-feature          | /plan-feature     | Create implementation plan from scoping          |
-| build-plan            | /build-plan       | Implement plan with parallel subagents           |
-| debug                 | /debug            | Diagnose bugs via hypotheses + root-cause review |
-| write-tests           | /write-tests      | Independent P0 test writing                      |
-| design                | /design           | UI design / review + staff-designer              |
-| add-logs              | /add-logs         | Insert structured logging                        |
-| create-pr-description | /create-pr        | PR description from git diff                     |
-| add-vector-store      | /add-vector-store | Wire Turbopuffer vector search                   |
-| add-blob-storage      | /add-blob-storage | Wire Vercel Blob file storage                    |
-| validate-app          | /validate-app     | Run local/deployment validation harnesses        |
+| Skill                 | Trigger           | Purpose                                                  |
+| --------------------- | ----------------- | -------------------------------------------------------- |
+| init-project          | /init-project     | Conversational setup wizard                              |
+| scope-feature         | /scope-feature    | Simplify spec + options + staff review                   |
+| add-infra             | /add-infra        | Evaluate infra options, harness + docs first, then build |
+| plan-feature          | /plan-feature     | Create implementation plan from scoping                  |
+| build-plan            | /build-plan       | Implement plan with parallel subagents                   |
+| debug                 | /debug            | Diagnose bugs via hypotheses + root-cause review         |
+| write-tests           | /write-tests      | Independent P0 test writing                              |
+| design                | /design           | UI design / review + staff-designer                      |
+| add-logs              | /add-logs         | Insert structured logging                                |
+| create-pr-description | /create-pr        | PR description from git diff                             |
+| add-vector-store      | /add-vector-store | Wire Turbopuffer vector search                           |
+| add-blob-storage      | /add-blob-storage | Wire Vercel Blob file storage                            |
+| validate-app          | /validate-app     | Run local/deployment validation harnesses                |

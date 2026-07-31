@@ -5,7 +5,7 @@ import { Button } from '../components/ui/button.js';
 import { Input } from '../components/ui/input.js';
 import { BrandMark } from '../components/brand-mark.js';
 
-type Mode = 'signin' | 'signup' | 'check-email';
+type Mode = 'signin' | 'signup';
 
 // User dismissed the Google popup — an action, not an error. Show nothing.
 const POPUP_DISMISSED_CODES = ['auth/popup-closed-by-user', 'auth/cancelled-popup-request'];
@@ -25,8 +25,6 @@ function friendlyAuthMessage(err: unknown): string {
       return 'Password is too weak — use at least 6 characters.';
     case 'auth/invalid-credential':
       return 'Invalid email or password.';
-    case 'email-not-verified':
-      return 'Please verify your email first — check your inbox for the verification link.';
     default:
       return err instanceof Error && err.message.includes('not configured')
         ? err.message
@@ -57,14 +55,15 @@ function GoogleLogo({ className }: { className?: string }): JSX.Element {
   );
 }
 
-// IMPORTANT: this page must never auto-redirect on auth state (no `user`
-// effect). Sign-up transiently authenticates before signUp signs back out — a
-// user-watching redirect would destroy the check-email confirmation state.
-// Navigate only imperatively in the submit handlers below.
+// PublicRoute wraps this page, so a signed-in visitor never renders it — that
+// guard, not this component, owns the redirect away from here. Sign-up leaves
+// the user signed in and unverified, and navigating to /verify-email below only
+// makes the guard's own destination immediate.
 export function LoginPage(): JSX.Element {
   const { signIn, signUp, signInWithGoogle } = useAuth();
   const navigate = useNavigate();
   const [mode, setMode] = useState<Mode>('signin');
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -73,14 +72,18 @@ export function LoginPage(): JSX.Element {
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     setError(null);
+    if (mode === 'signup' && !name.trim()) {
+      setError('Please enter your name.');
+      return;
+    }
     setLoading(true);
     try {
       if (mode === 'signup') {
-        await signUp(email, password);
-        setMode('check-email');
+        await signUp(email, password, name);
+        navigate('/verify-email', { replace: true });
       } else {
         await signIn(email, password);
-        navigate('/chat');
+        navigate('/chat', { replace: true });
       }
     } catch (err) {
       setError(friendlyAuthMessage(err));
@@ -93,7 +96,7 @@ export function LoginPage(): JSX.Element {
     setError(null);
     try {
       await signInWithGoogle();
-      navigate('/chat');
+      navigate('/chat', { replace: true });
     } catch (err) {
       if (POPUP_DISMISSED_CODES.includes(authErrorCode(err))) return;
       setError(friendlyAuthMessage(err));
@@ -104,24 +107,6 @@ export function LoginPage(): JSX.Element {
     setMode(next);
     setError(null);
   };
-
-  if (mode === 'check-email') {
-    return (
-      <div className="flex items-center justify-center min-h-[calc(100vh-56px)] px-4">
-        <div className="w-full max-w-sm space-y-6 text-center">
-          <BrandMark className="h-8 w-8 mx-auto" />
-          <h1 className="text-2xl font-bold text-ink">Check your email</h1>
-          <p className="text-sm text-ink-muted">
-            We sent a verification link to <span className="font-medium text-ink">{email}</span>.
-            Click it, then sign in.
-          </p>
-          <Button variant="outline" className="w-full" onClick={() => switchMode('signin')}>
-            Back to sign in
-          </Button>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-56px)] px-4">
@@ -140,6 +125,15 @@ export function LoginPage(): JSX.Element {
           <div className="h-px flex-1 bg-border" />
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
+          {mode === 'signup' && (
+            <Input
+              type="text"
+              placeholder="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          )}
           <Input
             type="email"
             placeholder="Email"

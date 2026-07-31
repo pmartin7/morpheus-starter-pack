@@ -34,6 +34,20 @@ Group by layer: packages first, then api, then web.
 List P0 test cases (auth guard, service logic, Zod schemas, critical UI behaviour).
 Note: tests are written in a separate agent pass via write-tests.
 
+### Documentation Impact
+
+Name the docs this feature makes stale, and the edit each one needs. Treat it as
+part of the file list, because build-plan will work it as Phase 5:
+
+- new/changed routes or guards → Route Map in `ARCHITECTURE.md`
+- new entities or fields → Entity Model in `ARCHITECTURE.md`
+- new env vars → `.env.example`
+- changed flows → Data Flow in `ARCHITECTURE.md`
+- rules future code must obey → Key Invariants in `ARCHITECTURE.md`
+- new harness routes or assertions → `harness/`
+
+Write "none" only if the feature is genuinely invisible in all of the above.
+
 ### Risks
 
 List 2–4 things that could go wrong during implementation. For each: risk description + mitigation.

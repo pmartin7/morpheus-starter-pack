@@ -4,12 +4,12 @@ import { Button } from '../components/ui/button.js';
 import { BrandMark } from '../components/brand-mark.js';
 
 export function AppLayout(): JSX.Element {
-  const { user, signOut } = useAuth();
+  const { user, emailVerified, signOut } = useAuth();
   const navigate = useNavigate();
 
   const handleSignOut = async (): Promise<void> => {
     await signOut();
-    navigate('/login');
+    navigate('/login', { replace: true });
   };
 
   return (
@@ -22,9 +22,13 @@ export function AppLayout(): JSX.Element {
         <div className="flex items-center gap-3">
           {user ? (
             <>
-              <Link to="/chat" className="text-sm text-ink-muted hover:text-ink">
-                Chat
-              </Link>
+              {/* Unverified accounts cannot reach /chat, so offering the link
+                  would only bounce them to the verification page. */}
+              {emailVerified && (
+                <Link to="/chat" className="text-sm text-ink-muted hover:text-ink">
+                  Chat
+                </Link>
+              )}
               <Button variant="ghost" size="sm" onClick={handleSignOut}>
                 Sign out
               </Button>

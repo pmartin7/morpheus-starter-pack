@@ -15,7 +15,8 @@ Vitest for all apps and packages. One test runner, one config pattern.
 Commands:
 
 - `pnpm test` — all tests
-- `pnpm test --filter=@morpheus/api` — API tests only
+- `pnpm --filter=@morpheus/api test` — API tests only (the filter has to precede
+  the script name)
 - `pnpm validate` — lint + type-check + tests
 
 ## 2) Philosophy
@@ -78,7 +79,24 @@ const module = await Test.createTestingModule({
 Use `@testing-library/react` with jsdom. Assert on visible behavior:
 screen queries, user events, navigation. No snapshot tests.
 
-## 9) Definition of Done
+## 9) Worked Examples
+
+Copy from these three rather than starting from scratch. One per package, one per
+priority class, each written to be read as a template:
+
+| File                                                     | Shows                                                                                                      |
+| -------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `packages/shared/src/schemas/env.test.ts`                | a Zod boundary: fresh fixture per test, plus the failure naming the missing variable                       |
+| `apps/api/src/common/guards/firebase-auth.guard.test.ts` | `verifyIdToken` mocked at the boundary, a hand-built `ExecutionContext`, `onModuleInit` for `ModuleRef` DI |
+| `apps/web/src/features/auth/protected-route.test.tsx`    | a redirect matrix asserted through `MemoryRouter` + a real `AuthContext.Provider`, not on mock calls       |
+
+The `test` script in these three packages is plain `vitest run`: an empty suite
+must fail. Keep `--passWithNoTests` only in a package that legitimately has none.
+
+Note `packages/shared/tsconfig.json` excludes `**/*.test.ts` so tests stay out of
+`dist` — `pnpm type-check` there does not check them, but `vitest` does.
+
+## 10) Definition of Done
 
 1. implementation complete
 2. tests added in separate pass

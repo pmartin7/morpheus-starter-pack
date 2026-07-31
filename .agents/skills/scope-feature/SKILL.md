@@ -14,6 +14,10 @@ Read AGENTS.md before starting.
 
 ## Phase 1 — Understand
 
+If the request adds a runtime, an external service, or a deploy target rather than
+a feature inside the existing stack, stop and use `/add-infra` instead: that
+workflow builds the harness and the docs before the implementation.
+
 Ask the user:
 
 1. What is the feature? (one sentence)

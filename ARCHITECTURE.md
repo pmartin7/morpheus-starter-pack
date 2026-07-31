@@ -9,11 +9,17 @@ it describes your specific product's topology.
 
 ### Route Map
 
-| Route  | Page              | Auth |
-| ------ | ----------------- | ---- |
-| /      | Landing page      | No   |
-| /login | Firebase auth     | No   |
-| /chat  | AI chat interface | Yes  |
+| Route         | Page                 | Auth                 | Guard                           |
+| ------------- | -------------------- | -------------------- | ------------------------------- |
+| /             | Landing page         | No                   | `PublicRoute`                   |
+| /login        | Firebase auth        | No                   | `PublicRoute`                   |
+| /chat         | AI chat interface    | Signed in + verified | `ProtectedRoute`                |
+| /verify-email | Verification pending | Signed in            | self-guarding (neither wrapper) |
+
+`PublicRoute` redirects a signed-in visitor to `/chat` or `/verify-email`;
+`ProtectedRoute` requires signed in **and** verified and otherwise redirects to
+`/verify-email`. `/verify-email` does its own redirecting because it is the
+destination of both guards. See `docs/AUTH.md`.
 
 ### Entity Model
 
@@ -27,10 +33,20 @@ BaseEntity (abstract): id (UUID), createdAt, updatedAt
 ### Data Flow
 
 ```
-Auth: Browser → Firebase SDK → JWT → API Guard → verify → getOrCreate User
+Auth:   Browser → Firebase SDK → ID token → API Guard → verify signature →
+        reject unverified password accounts → getOrCreate User
+Signup: signUp(email, password, name) → updateProfile → sendEmailVerification
+        (continueUrl /verify-email) → signed in, unverified → /verify-email
+Verify: user clicks the emailed link (any tab) → /verify-email polls
+        refreshUser() every 5s → reload() → forced getIdToken →
+        onIdTokenChanged → claim re-derived → redirect to /chat
 Chat: Browser → useChat → POST /api/chat/send → AI SDK streamText → SSE → client
 CRUD: Browser → fetch → /api/{resource} → Guard → Service → MikroORM → Neon Postgres
 ```
+
+The guard rejects a password account whose token claim is not verified, and it
+is also the only place a `User` row is created — so an unverified request leaves
+no row behind. Full contract and error shapes: `docs/AUTH.md`.
 
 ### Deployment & Environments
 
@@ -45,17 +61,30 @@ One Neon Postgres project with three database branches mirroring the git flow:
 - Local dev: `.env` `NEON_DATABASE_URL` → Neon `dev` branch (direct URL).
 - Vercel runtime uses pooled (`-pooler`) connection strings; migrations use
   direct URLs.
-- `.github/workflows/ci.yml` — format + lint + type-check + tests on push/PR
-  to `staging`/`main`.
+- `.github/workflows/ci.yml` — format + lint + type-check + docs sync + tests on
+  push/PR to `staging`/`main`. `pnpm check` carries `pnpm docs:check`, so drift
+  between this file and the code fails CI.
 - `.github/workflows/migrate.yml` — applies MikroORM migrations using the
   matching GitHub environment's `NEON_DATABASE_URL` secret.
 - Flow: local (`dev` branch) → merge to `staging` → merge to `main`.
 - Web: Vite SPA (static); API: NestJS single serverless function.
+- Never set `FIREBASE_AUTH_EMULATOR_HOST` or `VITE_FIREBASE_AUTH_EMULATOR_HOST`
+  in a Vercel environment: the API refuses to boot with the first set under
+  `NODE_ENV=production`, since the Admin SDK would stop verifying token
+  signatures. They are local-dev and `pnpm validate:auth` only (`docs/AUTH.md`).
 - If the product uses OAuth: random Vercel preview URLs can never be OAuth
   origins — test OAuth flows on the stable staging domain.
 
 ### Key Invariants
 
+- Email verification is read from the ID token's `email_verified` claim, never
+  from the account's `user.emailVerified` flag. The two diverge: `reload()`
+  refreshes the flag and leaves the cached token alone, and the API guard reads
+  the claim. Gating on the flag renders a verified UI whose every API call 401s,
+  and since the guard is the only thing that creates the `User` row, none is
+  created either — so it looks like a database fault. Derive verification from
+  `getIdTokenResult()`, subscribe with `onIdTokenChanged`, and force a token
+  refresh before sending a token whose claim is false (`docs/AUTH.md` § 2)
 - One app, two packages (monorepo)
 - Zod at all boundaries (single validation system)
 - Named exports only

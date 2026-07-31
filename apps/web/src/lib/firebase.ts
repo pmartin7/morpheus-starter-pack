@@ -1,5 +1,5 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { connectAuthEmulator, getAuth } from 'firebase/auth';
 import type { Auth } from 'firebase/auth';
 
 const firebaseConfig = {
@@ -18,7 +18,16 @@ let cachedAuth: Auth | null = null;
 export function getFirebaseAuth(): Auth | null {
   if (cachedAuth) return cachedAuth;
   if (!firebaseConfig.apiKey) return null;
-  cachedAuth = getAuth(initializeApp(firebaseConfig));
+  const auth = getAuth(initializeApp(firebaseConfig));
+
+  const emulatorHost = import.meta.env['VITE_FIREBASE_AUTH_EMULATOR_HOST'];
+  // Gated on DEV as well as the variable: a production bundle that reached an
+  // emulator would accept tokens nothing ever signed.
+  if (emulatorHost && import.meta.env.DEV) {
+    connectAuthEmulator(auth, `http://${emulatorHost}`, { disableWarnings: true });
+  }
+
+  cachedAuth = auth;
   return cachedAuth;
 }
 

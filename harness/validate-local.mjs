@@ -12,8 +12,10 @@ import { mkdirSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { launchChromium } from './lib/browser.mjs';
+
 // Routes to validate. Update this list per-project as routes are added/removed.
-const ROUTES = ['/', '/login', '/chat'];
+const ROUTES = ['/', '/login', '/chat', '/verify-email'];
 
 // Override with PORT=5174 when another project already occupies :5173 —
 // otherwise the harness would happily validate the wrong app.
@@ -88,21 +90,11 @@ function stopDevServer(child) {
 }
 
 async function launchBrowser() {
-  let chromium;
   try {
-    ({ chromium } = await import('playwright'));
-  } catch {
-    console.error('FAIL: playwright is not installed');
-    console.error('hint: run pnpm install, then pnpm exec playwright install chromium');
-    process.exit(2);
-  }
-  try {
-    return await chromium.launch();
+    return await launchChromium();
   } catch (err) {
-    console.error(`FAIL: could not launch chromium: ${err.message}`);
-    console.error(
-      'hint: run pnpm exec playwright install chromium — in the SAME permission context as this harness (sandboxed runners use per-profile browser caches)',
-    );
+    console.error('FAIL: could not launch chromium');
+    console.error(`hint: ${err.message}`);
     process.exit(2);
   }
 }

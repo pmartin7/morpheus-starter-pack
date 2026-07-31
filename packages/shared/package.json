@@ -15,7 +15,7 @@
     "build": "tsc",
     "lint": "eslint src",
     "type-check": "tsc --noEmit",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run"
   },
   "lint-staged": {
     "*.ts": [

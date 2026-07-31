@@ -2,7 +2,7 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from './use-auth.js';
 
 export function ProtectedRoute({ children }: { children: React.ReactNode }): JSX.Element {
-  const { user, loading } = useAuth();
+  const { user, emailVerified, loading } = useAuth();
 
   if (loading) {
     return (
@@ -14,6 +14,12 @@ export function ProtectedRoute({ children }: { children: React.ReactNode }): JSX
 
   if (!user) {
     return <Navigate to="/login" replace />;
+  }
+
+  // Signed in is not enough: the API guard rejects every request an unverified
+  // password account makes, so this route would render a UI that only 401s.
+  if (!emailVerified) {
+    return <Navigate to="/verify-email" replace />;
   }
 
   return <>{children}</>;

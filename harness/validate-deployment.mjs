@@ -14,6 +14,8 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { launchChromium } from './lib/browser.mjs';
+
 const API_BASE = 'https://api.vercel.com';
 const STAGING_BRANCH = 'staging';
 
@@ -147,22 +149,14 @@ async function smokeCheck(label, url) {
 
 // Returns a failure object or null on pass.
 async function visualCheckProduction(url) {
-  let chromium;
-  try {
-    ({ chromium } = await import('playwright'));
-  } catch {
-    exitEnvError(
-      'playwright is not installed',
-      'hint: run pnpm install, then pnpm exec playwright install chromium',
-    );
-  }
   let browser;
   try {
-    browser = await chromium.launch();
+    browser = await launchChromium();
   } catch (err) {
+    // launchChromium's message already names the fix for this exact failure.
     exitEnvError(
-      `could not launch chromium: ${err.message}`,
-      'hint: run pnpm exec playwright install chromium',
+      err.message,
+      'hint: browser harnesses must run with full permissions — Chromium segfaults inside the agent sandbox',
     );
   }
 

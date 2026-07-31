@@ -73,4 +73,25 @@ Use browser tools to:
 2. Verify the feature works as specified
 3. Check for console errors
 
+Then run `pnpm validate:local` rather than trusting terminal output, and open the
+screenshots in `harness/artifacts/`. A passing exit code proves the page rendered
+something, not that it rendered the right thing.
+
 Report what was verified and any issues found.
+
+## Phase 5 — Update Docs
+
+Not optional, and not a follow-up task. Work the Documentation Impact section of
+the plan, then confirm nothing drifted:
+
+```bash
+pnpm docs:check
+```
+
+At minimum, reconcile `ARCHITECTURE.md` with what you built: Route Map for new
+routes or guards, Entity Model for new entities or fields, Data Flow for changed
+flows, Key Invariants for any rule future code must obey.
+
+Record the invariants you discovered while building — the non-obvious constraint
+that cost you an hour is the highest-value sentence in the whole change. See
+`.agents/rules/documentation-currency.mdc`.

@@ -45,11 +45,14 @@ export class FirebaseAuthGuard implements CanActivate, OnModuleInit {
       throw new UnauthorizedException('Email not verified');
     }
 
-    const user = await this.usersService.getOrCreate(
-      decoded.uid,
-      decoded['email'] ?? '',
-      decoded['name'] ?? null,
-    );
+    // User.email is unique and not nullable, so an empty fallback would let the
+    // second emailless token collide and surface as a 500 instead of a 401.
+    const email = decoded['email'];
+    if (typeof email !== 'string' || email === '') {
+      throw new UnauthorizedException('Token has no email claim');
+    }
+
+    const user = await this.usersService.getOrCreate(decoded.uid, email, decoded['name'] ?? null);
 
     request.user = user;
     return true;

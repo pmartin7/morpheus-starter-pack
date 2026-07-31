@@ -9,6 +9,11 @@ export const EnvSchema = z.object({
   FIREBASE_PRIVATE_KEY: z.string().min(1),
   FIREBASE_CLIENT_EMAIL: z.string().email(),
 
+  // Firebase Auth emulator, for local dev and the auth-journey harness. When
+  // set, the Admin SDK trusts tokens without verifying signatures — main.ts
+  // refuses to boot if it is ever set in production.
+  FIREBASE_AUTH_EMULATOR_HOST: z.string().optional(),
+
   // AI Providers
   ANTHROPIC_API_KEY: z.string().optional(),
   OPENAI_API_KEY: z.string().optional(),

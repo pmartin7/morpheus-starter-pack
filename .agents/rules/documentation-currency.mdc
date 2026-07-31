@@ -1,0 +1,53 @@
+---
+description:
+  Docs are part of the change. When routes, entities, env vars, or a documented
+  flow change, update the docs in the same pass and run pnpm docs:check.
+alwaysApply: true
+---
+
+# Documentation currency
+
+Stale docs are worse than no docs: every future agent inherits the error and
+trusts it. A change is not done until the docs that describe it are true again.
+
+## The rule
+
+When your change touches any of the following, update the doc **in the same
+pass** — not "later", not in a plan file:
+
+| You changed                                   | Update                              |
+| --------------------------------------------- | ----------------------------------- |
+| a web route or a route guard                  | Route Map in `ARCHITECTURE.md`      |
+| an entity, or a field on one                  | Entity Model in `ARCHITECTURE.md`   |
+| the env schema (`packages/shared/.../env.ts`) | `.env.example`                      |
+| a documented data flow                        | Data Flow in `ARCHITECTURE.md`      |
+| a rule future code must obey                  | Key Invariants in `ARCHITECTURE.md` |
+| design tokens in `globals.css`                | token table in `docs/UI_DESIGN.md`  |
+| a convention other code should copy           | the matching `docs/*.md`            |
+
+Then run:
+
+```bash
+pnpm docs:check
+```
+
+It mechanically compares the router, the entities, and the env schema against the
+docs, and fails on drift. It runs inside `pnpm check`, so CI catches what you
+forget — but do not use it as a to-do list: it cannot see a rewritten flow or a new
+invariant, and those are the parts that cost the next agent the most.
+
+## Write invariants, not narration
+
+Prefer the fact that would have prevented the bug over a description of the
+change. Bad: "added a verify-email page". Good: "verification is read from the ID
+token claim, never `user.emailVerified` — they diverge on session restore".
+
+The second sentence stops a future agent from reintroducing the bug. The first just
+tells them a file exists, which they can already see.
+
+## Plans are not documentation
+
+`docs/plans/*.md` are point-in-time proposals and go stale by design. Never leave a
+fact that is true today reachable only from a plan file: promote it to
+`ARCHITECTURE.md` or the relevant `docs/*.md`. If a plan and a doc disagree, the doc
+wins and the plan is history.

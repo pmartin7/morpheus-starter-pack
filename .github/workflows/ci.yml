@@ -30,7 +30,7 @@ jobs:
       - name: Format check
         run: pnpm format:check
 
-      - name: Lint and type-check
+      - name: Lint, type-check and docs sync
         run: pnpm check
 
       - name: Tests

@@ -51,19 +51,22 @@ building on a foundation and building on sand.
 **A running application** with:
 
 - AI chat interface (streaming responses via SSE)
-- Firebase authentication (email/password + Google sign-in)
+- Firebase authentication (email/password with a real email-verification flow,
+  plus Google sign-in)
 - REST API with user management and chat persistence
 - Postgres database with migration support
 - Auto-deploy to Vercel on every `git push`
 
 **An agent operating system** with:
 
-- 11 agent skills (research, plan, build, test, design, debug, and more)
+- 13 agent skills (research, plan, build, test, design, debug, and more)
 - 4 specialist agent roles (staff engineer, AI engineer, bug fixer, designer)
 - Documentation that agents can read and follow (architecture, style guide, testing
   conventions, logging rules, UI design system)
 - Mechanical validation (`pnpm check` / `pnpm validate`) that catches mistakes
-  before they ship
+  before they ship, including a docs-sync check so the agent's own map stays true
+- Validation harnesses (`harness/`) that prove the app actually runs — routes
+  render, the auth journey completes, deployments are healthy
 - Evaluation rubrics that keep agent output high-quality
 
 **A tech stack optimized for prototyping at speed:**
@@ -507,10 +510,12 @@ new concept, the scope → plan → build → test cycle keeps the codebase clea
 
 ```bash
 pnpm dev          # Start local development (web + API)
-pnpm check        # Lint + type-check (run after every change)
-pnpm validate     # Lint + type-check + tests (run before shipping)
+pnpm check        # Lint + type-check + docs sync (run after every change)
+pnpm validate     # check + tests (run before shipping)
 pnpm test         # Run tests only
 pnpm build        # Production build
+pnpm docs:check   # Do the docs still describe the code? (runs inside pnpm check)
+pnpm validate:local  # Boot the app in a browser and prove every route renders
 ```
 
 ---
@@ -522,15 +527,16 @@ purpose in your task description.
 
 ### Core workflow
 
-| Command          | What it does                                                                                 |
-| ---------------- | -------------------------------------------------------------------------------------------- |
-| `/init-project`  | One-time setup wizard — configures your app and deploys it                                   |
-| `/scope-feature` | Scopes a feature idea — explores the codebase, proposes 2-3 options, gets staff-level review |
-| `/plan-feature`  | Creates a detailed implementation plan from scoping                                          |
-| `/build-plan`    | Implements a plan — builds in dependency order, validates with `pnpm check`                  |
-| `/debug`         | Diagnoses a bug — forms hypotheses, tests them against code, recommends a fix                |
-| `/write-tests`   | Writes tests for existing code — runs independently from the implementer                     |
-| `/design`        | Reviews or proposes UI design — takes browser screenshots, checks against design system      |
+| Command          | What it does                                                                                     |
+| ---------------- | ------------------------------------------------------------------------------------------------ |
+| `/init-project`  | One-time setup wizard — configures your app and deploys it                                       |
+| `/scope-feature` | Scopes a feature idea — explores the codebase, proposes 2-3 options, gets staff-level review     |
+| `/add-infra`     | Adds a piece of the stack — evaluates options, builds the harness and docs first, then builds it |
+| `/plan-feature`  | Creates a detailed implementation plan from scoping                                              |
+| `/build-plan`    | Implements a plan — builds in dependency order, validates with `pnpm check`                      |
+| `/debug`         | Diagnoses a bug — forms hypotheses, tests them against code, recommends a fix                    |
+| `/write-tests`   | Writes tests for existing code — runs independently from the implementer                         |
+| `/design`        | Reviews or proposes UI design — takes browser screenshots, checks against design system          |
 
 ### Utilities
 
@@ -581,12 +587,20 @@ morpheus-starter/
 │
 ├── docs/                    Agent-readable documentation
 │   ├── STYLE_GUIDE.md       Code conventions
+│   ├── AUTH.md              Auth flows, the verification contract, emulator
 │   ├── TESTING.md           Test philosophy and setup
 │   ├── LOGGING.md           Logging rules and levels
 │   └── UI_DESIGN.md         Visual identity and component patterns
 │
+├── harness/                 Validation harnesses agents run to prove it works
+│   ├── validate-local.mjs   Every route renders, no console errors
+│   ├── validate-auth-journey.mjs  Sign-up → verify → authenticated API call
+│   ├── validate-deployment.mjs    Latest Vercel deployments are healthy
+│   ├── check-docs-sync.mjs  Routes/entities/env vars match the docs
+│   └── design-shots.mjs     Screenshots at desktop + mobile widths
+│
 ├── .agents/                 Agent OS — source of truth
-│   ├── skills/              Agent skill definitions (11 skills)
+│   ├── skills/              Agent skill definitions (13 skills)
 │   ├── rules/               Always-on agent rules
 │   ├── agents/              Specialist agent role definitions
 │   └── tmp/                 Agent scratch space

@@ -6,8 +6,9 @@
     "build": "turbo build",
     "lint": "turbo lint",
     "type-check": "turbo type-check",
-    "check": "turbo lint type-check",
-    "validate": "turbo lint type-check test",
+    "check": "turbo lint type-check && pnpm docs:check",
+    "validate": "turbo lint type-check test && pnpm docs:check",
+    "docs:check": "node harness/check-docs-sync.mjs",
     "test": "turbo test",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -16,12 +17,15 @@
     "migrate:up": "pnpm --filter=@morpheus/api mikro-orm migration:up",
     "validate:local": "node harness/validate-local.mjs",
     "validate:deploy": "node harness/validate-deployment.mjs",
-    "design:shots": "node harness/design-shots.mjs"
+    "validate:auth": "node harness/validate-auth-journey.mjs",
+    "design:shots": "node harness/design-shots.mjs",
+    "playwright:install": "node harness/install-browsers.mjs"
   },
   "lint-staged": {
     "*": "prettier --write --ignore-unknown"
   },
   "devDependencies": {
+    "firebase-tools": "^15.25.1",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
     "playwright": "^1.45.0",

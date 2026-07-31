@@ -182,16 +182,16 @@ gh repo create {PROJECT_NAME} --public --source=. --remote=origin --push
 # Install dependencies (also installs the husky pre-commit hook)
 pnpm install
 
-# Install the Playwright browser used by the validation harnesses — without
-# this, validate:local fails with exit code 2 on first run. On sandboxed agent
-# runners the browser cache path can differ per sandbox profile: install and
-# run the harness in the SAME permission context, or the harness won't find
-# the executable even right after a successful install.
-pnpm exec playwright install chromium
+# Install the Chromium build the validation harnesses use. Idempotent, and it
+# pins the install location so it survives across agent sessions.
+pnpm playwright:install
 
 # Link to Vercel
 vercel link
 ```
+
+Chromium cannot run inside the agent sandbox, so run `playwright:install` and
+the harnesses with full permissions. The harness now says so when it happens.
 
 ### Environment topology
 

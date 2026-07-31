@@ -58,3 +58,19 @@ Delegate to root-cause-analyst agent:
 - Reference `.agents/skills/debug/references/rubric.md`
 
 Present the analyst's root cause analysis and proposed fix to the user.
+
+## Phase 6 — Capture the Invariant
+
+Once the fix is applied and `pnpm check` passes, ask: **why was this bug writable
+in the first place?** If the answer is a fact about the system that was not written
+down anywhere, write it down now.
+
+- A rule future code must obey → Key Invariants in `ARCHITECTURE.md`
+- A flow that behaves differently than the docs imply → Data Flow or the relevant
+  `docs/*.md`
+- A route, guard, entity, or env var that changed → the matching section, then
+  `pnpm docs:check`
+- A case the harness should have caught → add the route or assertion to `harness/`
+
+State the invariant as the constraint, not as a changelog entry. A bug class that
+stays undocumented gets reintroduced.
